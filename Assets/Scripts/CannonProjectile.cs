@@ -1,30 +1,38 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
-public class CannonProjectile : MonoBehaviour
+public class CannonProjectile : BaseProjectile
 {
-	public float speed = 2f;
-	public int damage = 10;
+	[SerializeField] private bool m_useGravity = false;
+	private Vector3 m_velocity;
+	private float m_gravity = Physics.gravity.y;
 
-	private void Update()
+	public void Launch(float speed, int damage = 10, bool useGravity = false)
 	{
-		var translation = transform.forward * speed;
-		transform.Translate(translation);
+		base.Launch(speed, damage);
+		m_useGravity = useGravity;
+		m_velocity = transform.forward * m_speed;
 	}
 
-	private void OnTriggerEnter(Collider other)
+	protected override void Move()
 	{
-		var monster = other.gameObject.GetComponent<Monster>();
-		if (monster == null)
+		if (m_useGravity)
 		{
-			return;
-		}
+			// Параболическая траектория с гравитацией
+			m_velocity += Vector3.down * (m_gravity * Time.deltaTime);
+			transform.position += m_velocity * Time.deltaTime;
 
-		monster.hp -= damage;
-		if (monster.hp <= 0)
-		{
-			Destroy(monster.gameObject);
+			// Поворот снаряда по направлению движения
+			if (m_velocity != Vector3.zero)
+			{
+				transform.rotation = Quaternion.LookRotation(m_velocity.normalized);
+			}
 		}
-		Destroy(gameObject);
+		else
+		{
+			// Прямолинейное движение
+			transform.position += transform.forward * (m_speed * Time.deltaTime);
+		}
 	}
 }

@@ -1,41 +1,29 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GuidedProjectile : MonoBehaviour
+public class GuidedProjectile : BaseProjectile
 {
-	public GameObject target;
-	public float speed = 0.15f;
-	public int damage = 10;
+	private GameObject m_target;
 
-	private void Update()
+	public void Launch(GameObject target, float speed = 0.2f, int damage = 10)
 	{
-		if (target == null)
+		base.Launch(speed, damage);
+		m_target = target;
+	}
+
+	protected override void Move()
+	{
+		if (m_target == null)
 		{
 			Destroy(gameObject);
 			return;
 		}
 
-		var translation = target.transform.position - transform.position;
-		if (translation.magnitude > speed)
+		Vector3 translation = m_target.transform.position - transform.position;
+		if (translation.magnitude > m_speed * Time.deltaTime)
 		{
-			translation = translation.normalized * speed;
+			translation = translation.normalized * (m_speed * Time.deltaTime);
 		}
-		transform.Translate(translation);
-	}
-
-	private void OnTriggerEnter(Collider other)
-	{
-		var monster = other.gameObject.GetComponent<Monster>();
-		if (monster == null)
-		{
-			return;
-		}
-
-		monster.hp -= damage;
-		if (monster.hp <= 0)
-		{
-			Destroy(monster.gameObject);
-		}
-		Destroy(gameObject);
+		transform.Translate(translation, Space.World);
 	}
 }

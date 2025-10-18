@@ -10,7 +10,6 @@ public class Spawner : MonoBehaviour
 
 	void Start()
 	{
-		// Создаем EnemyManager, если его нет
 		if (EnemyManager.instance == null)
 		{
 			var managerObject = new GameObject("EnemyManager");
@@ -31,13 +30,13 @@ public class Spawner : MonoBehaviour
 	{
 		if (m_moveTarget == null)
 		{
-			Debug.LogError("Move target is not assigned!", this);
+			Debug.LogError("Move Target не задан");
 			return;
 		}
 
 		var newEnemy = GameObject.CreatePrimitive(PrimitiveType.Capsule);
 		newEnemy.transform.position = transform.position;
-		// Отключение влияния гравитации на врага
+		// Отключение влияния гравитации на созданный объект врага
 		var newEnemyRigidbody = newEnemy.AddComponent<Rigidbody>();
 		newEnemyRigidbody.useGravity = false;
 		// Смена цвета врага

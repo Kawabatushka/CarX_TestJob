@@ -30,7 +30,7 @@ public class Enemy : MonoBehaviour
 
 		if (m_moveTarget == null)
 		{
-			Debug.LogError($"Move target = null", this);
+			Debug.LogError($"Move target = null");
 		}
 	}
 

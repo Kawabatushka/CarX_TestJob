@@ -4,20 +4,12 @@ using UnityEngine;
 
 class EnemyManager : MonoBehaviour
 {
+	/// <summary>
+	/// TODO - сюда запихнуть синглтон (хотя..?)
+	/// </summary>
+
 	private static EnemyManager m_instance;
 	public static EnemyManager instance => m_instance;
-	/*{
-		get
-		{
-			if (m_instance == null)
-			{
-				// Автоматически создаем EnemyManager если его нет
-				var managerObject = new GameObject("EnemyManager");
-				m_instance = managerObject.AddComponent<EnemyManager>();
-			}
-			return m_instance;
-		}
-	}*/
 
 	private HashSet<Enemy> m_activeEnemies = new HashSet<Enemy>();
 
@@ -45,27 +37,6 @@ class EnemyManager : MonoBehaviour
 		}
 	}
 
-	public IEnumerable<Enemy> GetActiveEnemies()
-	{
-		return m_activeEnemies;
-	}
-
-	public List<Enemy> GetEnemiesInRange(Vector3 position, float range)
-	{
-		List<Enemy> enemiesInRange = new List<Enemy>();
-		float sqrRange = range * range;
-
-		foreach (var enemy in m_activeEnemies)
-		{
-			if (enemy.isAlive && (enemy.transform.position - position).sqrMagnitude <= sqrRange)
-			{
-				enemiesInRange.Add(enemy);
-			}
-		}
-
-		return enemiesInRange;
-	}
-
 	public Enemy GetClosestEnemy(Vector3 position, float range)
 	{
 		Enemy closestEnemy = null;
@@ -74,7 +45,10 @@ class EnemyManager : MonoBehaviour
 
 		foreach (var enemy in m_activeEnemies)
 		{
-			if (!enemy.isAlive) continue;
+			if (!enemy.isAlive)
+			{
+				continue;
+			}
 
 			float sqrDistance = (enemy.transform.position - position).sqrMagnitude;
 			if (sqrDistance <= sqrRange && sqrDistance < closestDistance)
