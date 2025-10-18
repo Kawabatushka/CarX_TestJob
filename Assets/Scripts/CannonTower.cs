@@ -1,39 +1,75 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CannonTower : MonoBehaviour
+public class CannonTower : BaseTower
 {
-	public float shootInterval = 2f;
-	public float range = 10f;
-	public GameObject projectilePrefab;
-	public Transform shootPoint;
+	/// <summary>
+	/// TODO - не забыть добавить поворот пушки в направлении стрельбы
+	/// </summary>
 
-	private float m_lastShotTime = -0.5f;
+	[Header("Cannon Tower Settings")]
+	[SerializeField] private Transform m_shootPoint;
+	[SerializeField] private float m_projectileSpeed = 15f;
+	[SerializeField] private bool m_useLeadingShot = true;
 
-	private void Update()
+	protected override void Shoot()
 	{
-		if (projectilePrefab == null || shootPoint == null)
+		if (m_shootPoint == null)
 		{
+			Debug.LogError("Shoot Point не задан");
 			return;
 		}
 
-		foreach (var monster in FindObjectsOfType<Monster>())
+		Vector3 shootDirection = GetShootDirection();
+		Quaternion shootRotation = Quaternion.LookRotation(shootDirection);
+
+		var projectile = Instantiate(m_projectilePrefab, m_shootPoint.position, shootRotation);
+		var cannonProjectile = projectile.GetComponent<CannonProjectile>();
+		if (cannonProjectile != null)
 		{
-			if (Vector3.Distance(transform.position, monster.transform.position) > range)
-			{
-				continue;
-			}
-
-			if (m_lastShotTime + shootInterval > Time.time)
-			{
-				continue;
-			}
-
-			// shot
-			Instantiate(projectilePrefab, shootPoint.position, shootPoint.rotation);
-
-			m_lastShotTime = Time.time;
+			cannonProjectile.Launch(m_projectileSpeed);
 		}
 
+		m_lastShotTime = Time.time;
+	}
+
+	private Vector3 GetShootDirection()
+	{
+		if (!m_useLeadingShot || m_currentTarget == null)
+		{
+			return (m_currentTarget.transform.position - m_shootPoint.position).normalized;
+		}
+
+		// Расчет стрельбы с упреждением
+		return CalculateLeadingShot();
+	}
+
+	private Vector3 CalculateLeadingShot()
+	{
+		Vector3 targetPosition = m_currentTarget.transform.position;
+		Vector3 targetVelocity = GetTargetVelocity();
+
+		float distanceToTarget = Vector3.Distance(m_shootPoint.position, targetPosition);
+		float timeToTarget = distanceToTarget / m_projectileSpeed;
+
+		// Прогнозируемая позиция цели
+		Vector3 predictedPosition = targetPosition + targetVelocity * timeToTarget;
+
+		return (predictedPosition - m_shootPoint.position).normalized;
+	}
+
+	private Vector3 GetTargetVelocity()
+	{
+		// Простая оценка скорости цели на основе перемещения
+		// В реальном проекте можно добавить компонент VelocityEstimator
+		var enemy = m_currentTarget.GetComponent<Enemy>();
+		if (enemy != null)
+		{
+			Vector3 direction = (enemy.moveTargetPosition - m_currentTarget.transform.position).normalized;
+			// Предполагаем, что скорость врага постоянна
+			return direction * 0.1f; // Примерное значение скорости
+		}
+
+		return Vector3.zero;
 	}
 }

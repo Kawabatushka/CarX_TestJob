@@ -1,40 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SimpleTower : MonoBehaviour
+public class SimpleTower : BaseTower
 {
-	public float shootInterval = 1f;
-	public float range = 10f;
-	public GameObject projectilePrefab;
+	[Header("Simple Tower Settings")]
+	[SerializeField] private Vector3 m_projectileSpawnOffset = new Vector3(0, 1.7f, 0);
 
-	private float m_lastShotTime = -0.5f;
-
-	private void Update()
+	protected override void Shoot()
 	{
-		if (projectilePrefab == null)
+		var projectile = Instantiate(m_projectilePrefab,
+			transform.position + m_projectileSpawnOffset,
+			Quaternion.identity);
+
+		var guidedProjectile = projectile.GetComponent<GuidedProjectile>();
+		if (guidedProjectile != null && m_currentTarget != null)
 		{
-			return;
+			guidedProjectile.Launch(m_currentTarget.gameObject);
 		}
 
-		foreach (var monster in FindObjectsOfType<Monster>())
-		{
-			if (Vector3.Distance(transform.position, monster.transform.position) > range)
-			{
-				continue;
-			}
-
-			if (m_lastShotTime + shootInterval > Time.time)
-			{
-				continue;
-			}
-
-			// shot
-			var projectile = Instantiate(projectilePrefab, transform.position + Vector3.up * 1.5f, Quaternion.identity) as GameObject;
-			var projectileBeh = projectile.GetComponent<GuidedProjectile>();
-			projectileBeh.target = monster.gameObject;
-
-			m_lastShotTime = Time.time;
-		}
-
+		m_lastShotTime = Time.time;
 	}
 }
