@@ -17,12 +17,28 @@ public class Enemy : MonoBehaviour
 	private bool m_isAlive = true;
 
 	public Vector3 moveTargetPosition => m_moveTarget != null ? m_moveTarget.position : Vector3.zero;
+	public Vector3 Velocity => moveTargetPosition != null ? (moveTargetPosition - transform.position).normalized * speed : Vector3.zero;
 	public bool hasReachedTarget => Vector3.Distance(transform.position, moveTargetPosition) <= REACH_DISTANCE;
 	public bool isAlive => m_isAlive;
-	public float healthPercent => (float)m_currentHP / m_maxHP;
-	public int currentHP => m_currentHP;
+	public float speed => m_speed;
 	public int maxHP => m_maxHP;
+	public int currentHP => m_currentHP;
+	public float healthPercent => (float)m_currentHP / m_maxHP;
 
+	/*public Enemy()
+	{
+		var newEnemy = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+		newEnemy.transform.position = transform.position;
+		// Отключение влияния гравитации на созданный объект врага
+		var newEnemyRigidbody = newEnemy.AddComponent<Rigidbody>();
+		newEnemyRigidbody.useGravity = false;
+		// Смена цвета врага
+		var newEnemyRenderer = newEnemy.GetComponent<Renderer>();
+		newEnemyRenderer.material.color = Color.magenta;
+
+		var enemyComponent = newEnemy.AddComponent<Enemy>();
+		return;
+	}*/
 
 	private void Start()
 	{

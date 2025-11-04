@@ -9,8 +9,8 @@ public abstract class BaseTower : MonoBehaviour
 	[SerializeField] protected float m_rangeToFindEnemy = 15f;
 	[SerializeField] protected GameObject m_projectilePrefab;
 
-	protected float m_lastShotTime = -1f;
 	protected Enemy m_currentTarget;
+	protected float m_lastShotTime = -1f;
 
 	protected virtual void Update()
 	{
@@ -42,7 +42,7 @@ public abstract class BaseTower : MonoBehaviour
 
 	protected virtual void OnDrawGizmosSelected()
 	{
-		Gizmos.color = Color.green;
+		Gizmos.color = UnityEngine.Color.green;
 		Gizmos.DrawWireSphere(transform.position, m_rangeToFindEnemy);
 	}
 }

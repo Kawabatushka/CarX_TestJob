@@ -34,6 +34,10 @@ public class Spawner : MonoBehaviour
 			return;
 		}
 
+		/// <summary>
+		/// TODO - добавить конструктор Enemy()
+		/// var newEnemy = new Enemy();
+		/// </summary>
 		var newEnemy = GameObject.CreatePrimitive(PrimitiveType.Capsule);
 		newEnemy.transform.position = transform.position;
 		// Отключение влияния гравитации на созданный объект врага

@@ -8,11 +8,11 @@ public class CannonProjectile : BaseProjectile
 	private Vector3 m_velocity;
 	private float m_gravity = Physics.gravity.y;
 
-	public void Launch(float speed, int damage = 10, bool useGravity = false)
+	public void Launch(Vector3 shootDirection, float speed, int damage = 10, bool useGravity = false)
 	{
 		base.Launch(speed, damage);
 		m_useGravity = useGravity;
-		m_velocity = transform.forward * m_speed;
+		m_velocity = shootDirection * m_speed;
 	}
 
 	protected override void Move()
