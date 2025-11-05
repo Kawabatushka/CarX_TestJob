@@ -4,10 +4,8 @@ using UnityEngine.Events;
 public class Enemy : MonoBehaviour
 {
 	[System.Serializable] public class EnemyEvent : UnityEvent<Enemy> { }
-
 	public EnemyEvent OnDied = new EnemyEvent();
-	public EnemyEvent OnDamageTaken = new EnemyEvent();
-
+	
 	[SerializeField] private Transform m_moveTarget;
 	[SerializeField] private float m_speed = 10f;
 	[SerializeField] private int m_maxHP = 30;
@@ -68,7 +66,7 @@ public class Enemy : MonoBehaviour
 
 	private void HandleTargetReached()
 	{
-		Debug.Log($"Враг дошел до цели и был уничтожен");
+		Debug.Log($"Враг дошел до цели и был уничтожен", this);
 		Die();
 	}
 
@@ -95,8 +93,7 @@ public class Enemy : MonoBehaviour
 		if (!m_isAlive) return;
 
 		m_currentHP -= damage;
-		OnDamageTaken?.Invoke(this);
-
+		
 		if (m_currentHP <= 0)
 		{
 			Die();

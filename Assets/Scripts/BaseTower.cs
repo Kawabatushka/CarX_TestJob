@@ -5,8 +5,8 @@ using UnityEngine;
 public abstract class BaseTower : MonoBehaviour
 {
 	[Header("Tower Settings")]
-	[SerializeField] protected float m_shootInterval = 1f;
-	[SerializeField] protected float m_rangeToFindEnemy = 15f;
+	[SerializeField] protected float m_shootInterval = 0.5f;
+	[SerializeField] protected float m_rangeToFindEnemy = 20f;
 	[SerializeField] protected GameObject m_projectilePrefab;
 
 	protected Enemy m_currentTarget;
