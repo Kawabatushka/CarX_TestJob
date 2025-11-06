@@ -4,12 +4,12 @@ using UnityEngine;
 
 public abstract class BaseProjectile : MonoBehaviour
 {
-	[SerializeField] protected int m_damage = 10;
-	[SerializeField] protected float m_speed = 10f;
+	protected int m_damage;
+	protected float m_speed;
 
 	protected bool m_isLaunched = false;
 
-	public virtual void Launch(float speed, int damage = 10)
+	public virtual void Launch(float speed, int damage)
 	{
 		m_speed = speed;
 		m_damage = damage;

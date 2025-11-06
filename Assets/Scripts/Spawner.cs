@@ -3,7 +3,6 @@ using System.Collections;
 
 public class Spawner : MonoBehaviour
 {
-	[SerializeField] private float m_interval = 2f;
 	[SerializeField] private Transform m_moveTarget;
 
 	private float m_lastSpawn = -1f;
@@ -19,7 +18,7 @@ public class Spawner : MonoBehaviour
 
 	void Update()
 	{
-		if (Time.time >= m_lastSpawn + m_interval)
+		if (Time.time >= m_lastSpawn + GameConfig.instance.spawnSettings.spawnInterval)
 		{
 			SpawnEnemy();
 			m_lastSpawn = Time.time;

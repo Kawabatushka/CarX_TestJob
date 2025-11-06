@@ -4,10 +4,6 @@ using UnityEngine;
 
 class EnemyManager : MonoBehaviour
 {
-	/// <summary>
-	/// TODO - сюда запихнуть синглтон (хотя..?)
-	/// </summary>
-
 	private static EnemyManager m_instance;
 	public static EnemyManager instance => m_instance;
 

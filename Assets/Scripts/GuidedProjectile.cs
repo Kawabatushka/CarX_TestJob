@@ -5,7 +5,7 @@ public class GuidedProjectile : BaseProjectile
 {
 	private GameObject m_target;
 
-	public void Launch(GameObject target, float speed = 0.2f, int damage = 10)
+	public void Launch(GameObject target, float speed, int damage = 0)
 	{
 		base.Launch(speed, damage);
 		m_target = target;

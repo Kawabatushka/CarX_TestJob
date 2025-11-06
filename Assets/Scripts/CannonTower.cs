@@ -7,10 +7,8 @@ public class CannonTower : BaseTower
 	/// TODO - не забыть добавить поворот пушки в направлении стрельбы
 	/// </summary>
 
-	[Header("Cannon Tower Settings")]
 	[Tooltip("Point of head of cannon")]
 	[SerializeField] private Transform m_shootStartPoint;
-	[SerializeField] private float m_projectileSpeed = 20f;
 	private Vector3 m_shootDirection;
 	private Vector3 predictedPosition;
 
@@ -23,21 +21,21 @@ public class CannonTower : BaseTower
 		}
 
 		m_shootDirection = CalculateShootDirection();
-		Debug.LogError($"m_shootDirection={m_shootDirection}");
 		Quaternion shootRotation = Quaternion.LookRotation(m_shootDirection);
 
-		var projectile = Instantiate(m_projectilePrefab, m_shootStartPoint.position, shootRotation);
+		var projectile = Instantiate(GameConfig.instance.towerSettings.cannonProjectilePrefab, m_shootStartPoint.position, shootRotation);
 		var cannonProjectile = projectile.GetComponent<CannonProjectile>();
 		if (cannonProjectile != null)
 		{
-			cannonProjectile.Launch(m_shootDirection, m_projectileSpeed);
+			cannonProjectile.Launch(GameConfig.instance.baseProjectileSettings.speed,
+	GameConfig.instance.cannonProjectileSettings.damage);
 		}
 		else
 		{
 			Debug.LogError($"Cannon projectile component = null");
 		}
 
-			m_lastShotTime = Time.time;
+		m_lastShotTime = Time.time;
 	}
 
 	private Vector3 CalculateShootDirection()
@@ -49,7 +47,7 @@ public class CannonTower : BaseTower
 		}
 
 		// Решение квадратного уравнения для точного расчета
-		float a = Vector3.Dot(m_currentTarget.Velocity, m_currentTarget.Velocity) - (m_projectileSpeed * m_projectileSpeed);
+		float a = Vector3.Dot(m_currentTarget.Velocity, m_currentTarget.Velocity) - (GameConfig.instance.baseProjectileSettings.speed * GameConfig.instance.baseProjectileSettings.speed);
 		float b = 2f * Vector3.Dot(m_currentTarget.Velocity, toTarget);
 		float c = Vector3.Dot(toTarget, toTarget);
 
@@ -71,7 +69,6 @@ public class CannonTower : BaseTower
 		}
 
 		predictedPosition = m_currentTarget.transform.position + m_currentTarget.Velocity * timeToTarget;
-		Debug.LogError($"predictedPosition = {predictedPosition}");
 		return (predictedPosition - m_shootStartPoint.position).normalized;
 	}
 
@@ -82,7 +79,7 @@ public class CannonTower : BaseTower
 			Gizmos.color = Color.yellow;
 			Gizmos.DrawLine(m_shootStartPoint.position, m_currentTarget.transform.position);
 		}
-		if(m_shootStartPoint != null)
+		if (m_shootStartPoint != null)
 		{
 			Gizmos.color = Color.red;
 			Gizmos.DrawSphere(predictedPosition, 0.2F);
