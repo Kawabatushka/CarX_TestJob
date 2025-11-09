@@ -7,7 +7,7 @@ public class Spawner : MonoBehaviour
 
 	private float m_lastSpawn = -1f;
 
-	void Start()
+	private void Start()
 	{
 		if (EnemyManager.instance == null)
 		{
@@ -16,9 +16,9 @@ public class Spawner : MonoBehaviour
 		}
 	}
 
-	void Update()
+	private void Update()
 	{
-		if (Time.time >= m_lastSpawn + GameConfig.instance.spawnSettings.spawnInterval)
+		if (Time.time >= m_lastSpawn + GameConfig.instance.enemySpawnSettings.spawnInterval)
 		{
 			SpawnEnemy();
 			m_lastSpawn = Time.time;
@@ -32,21 +32,17 @@ public class Spawner : MonoBehaviour
 			Debug.LogError("Move Target не задан");
 			return;
 		}
-
-		var newEnemy = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-		newEnemy.transform.position = transform.position;
-		// Отключение влияния гравитации на созданный объект врага
-		var newEnemyRigidbody = newEnemy.AddComponent<Rigidbody>();
-		newEnemyRigidbody.useGravity = false;
-		// Смена цвета врага
-		var newEnemyRenderer = newEnemy.GetComponent<Renderer>();
-		newEnemyRenderer.material.color = Color.magenta;
-
-		var enemyComponent = newEnemy.AddComponent<Enemy>();
-		if (enemyComponent != null)
+		if (GameConfig.instance?.enemySpawnSettings?.enemyPrefab == null)
 		{
-			enemyComponent.SetMoveTarget(m_moveTarget);
-			EnemyManager.instance.RegisterEnemy(enemyComponent);
+			Debug.LogError("Enemy Prefab не задан");
+			return;
 		}
+
+
+		var newEnemy = Instantiate(GameConfig.instance.enemySpawnSettings.enemyPrefab);
+		newEnemy.transform.position = this.transform.position;
+		newEnemy.TryGetComponent(out Enemy enemyComponent);
+		enemyComponent.SetMoveTarget(m_moveTarget);
+		EnemyManager.instance.RegisterEnemy(enemyComponent);
 	}
 }

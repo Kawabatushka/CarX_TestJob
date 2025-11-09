@@ -12,6 +12,16 @@ public class CannonTower : BaseTower
 	private Vector3 m_shootDirection;
 	private Vector3 predictedPosition;
 
+	protected override bool CanShoot()
+	{
+		if (gameConfigInstance.GetCannonTowerSettings(m_towerSettingsId)?.projectilePrefab == null)
+		{
+			Debug.LogError($"Cannon Projectile Prefab не задан\n" + this.name);
+			return false;
+		}
+		return base.CanShoot();
+	}
+
 	protected override void Shoot()
 	{
 		if (m_shootStartPoint == null)
@@ -23,12 +33,12 @@ public class CannonTower : BaseTower
 		m_shootDirection = CalculateShootDirection();
 		Quaternion shootRotation = Quaternion.LookRotation(m_shootDirection);
 
-		var projectile = Instantiate(GameConfig.instance.towerSettings.cannonProjectilePrefab, m_shootStartPoint.position, shootRotation);
+		var projectile = Instantiate(GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId).projectilePrefab, m_shootStartPoint.position, shootRotation);
 		var cannonProjectile = projectile.GetComponent<CannonProjectile>();
 		if (cannonProjectile != null)
 		{
-			cannonProjectile.Launch(GameConfig.instance.baseProjectileSettings.speed,
-	GameConfig.instance.cannonProjectileSettings.damage);
+			cannonProjectile.Launch(GameConfig.instance.GetCannonProjectileSettings(m_projectileSettingsId).speed,
+	GameConfig.instance.GetCannonProjectileSettings(m_projectileSettingsId).damage);
 		}
 		else
 		{
@@ -47,7 +57,7 @@ public class CannonTower : BaseTower
 		}
 
 		// Решение квадратного уравнения для точного расчета
-		float a = Vector3.Dot(m_currentTarget.Velocity, m_currentTarget.Velocity) - (GameConfig.instance.baseProjectileSettings.speed * GameConfig.instance.baseProjectileSettings.speed);
+		float a = Vector3.Dot(m_currentTarget.Velocity, m_currentTarget.Velocity) - (GameConfig.instance.GetCannonProjectileSettings(m_projectileSettingsId).speed * GameConfig.instance.GetCannonProjectileSettings(m_projectileSettingsId).speed);
 		float b = 2f * Vector3.Dot(m_currentTarget.Velocity, toTarget);
 		float c = Vector3.Dot(toTarget, toTarget);
 

@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+
+/// <summary>
+/// TODO - добавить класс манагер для конфига, чтоб только 1 экземпляр был создан и использовался везде
+/// </summary>
 
 [CreateAssetMenu(fileName = "GameConfig", menuName = "Configs/GameConfig")]
 public class GameConfig : ScriptableObject
@@ -8,34 +13,70 @@ public class GameConfig : ScriptableObject
 	[SerializeField] private EnemyData m_enemySettings;
 
 	[Space(10)]
-	[SerializeField] private SpawnerData m_spawnSettings;
+	[SerializeField] private SpawnerData m_enemySpawnSettings;
+
+	private BaseTowerData m_towerSettings;
+	[Space(10)]
+	[SerializeField] private List<CannonTowerData> m_cannonTowerSettings;
+	[Space(5)]
+	[SerializeField] private List<ProjectileTowerData> m_guidedTowerSettings;
 
 	[Space(10)]
-	[SerializeField] private TowerData m_towerSettings;
-
-	[Space(10)]
-	[SerializeField] private BaseProjectileData m_baseProjectileSettings;
+	[SerializeField] private List<CannonProjectileData> m_cannonProjectileSettings;
 	[Space(5)]
-	[SerializeField] private CannonProjectileData m_cannonProjectileSettings;
-	[Space(5)]
-	[SerializeField] private GuidedProjectileData m_guidedProjectileSettings;
+	[SerializeField] private List<GuidedProjectileData> m_guidedProjectileSettings;
 
 	public EnemyData enemyData => m_enemySettings;
-	public SpawnerData spawnSettings => m_spawnSettings;
-	public TowerData towerSettings => m_towerSettings;
-	public BaseProjectileData baseProjectileSettings => m_baseProjectileSettings;
-	public CannonProjectileData cannonProjectileSettings => m_cannonProjectileSettings;
-	public GuidedProjectileData guidedProjectileSettings => m_guidedProjectileSettings;
+
+	public SpawnerData enemySpawnSettings => m_enemySpawnSettings;
+
+	public BaseTowerData towerSettings => m_towerSettings;
+
+	public CannonTowerData GetCannonTowerSettings(int id)
+	{
+		if (m_cannonTowerSettings.Count > id)
+		{
+			return m_cannonTowerSettings[id];
+		}
+		return new CannonTowerData();
+	}
+
+	public ProjectileTowerData GetGuidedTowerSettings(int id)
+	{
+		if (m_guidedTowerSettings.Count > id)
+		{
+			return m_guidedTowerSettings[id];
+		}
+		return new ProjectileTowerData();
+	}
+
+	public CannonProjectileData GetCannonProjectileSettings(int id)
+	{
+		if (m_cannonProjectileSettings.Count > id)
+		{
+			return m_cannonProjectileSettings[id];
+		}
+		return new CannonProjectileData();
+	}
+
+	public GuidedProjectileData GetGuidedProjectileSettings(int id)
+	{
+		if (m_guidedProjectileSettings.Count > id)
+		{
+			return m_guidedProjectileSettings[id];
+		}
+		return new GuidedProjectileData();
+	}
 
 
 	private static GameConfig m_instance;
+
 	public static GameConfig instance
 	{
 		get
 		{
 			if (m_instance == null)
 			{
-				// Автоматически ищем в ресурсах (Resource.Load)
 				m_instance = Resources.Load<GameConfig>("GameConfig");
 				if (m_instance == null)
 				{
@@ -60,45 +101,62 @@ public class EnemyData
 [System.Serializable]
 public class SpawnerData
 {
+	[SerializeField] private GameObject m_enemyPrefab;
+	//[SerializeField] private Transform m_moveTarget;
 	[SerializeField] private float m_spawnInterval = 1.5f;
 
+	public GameObject enemyPrefab => m_enemyPrefab;
+	//public Transform moveTarget => m_moveTarget;
 	public float spawnInterval => m_spawnInterval;
 }
 
 [System.Serializable]
-public class TowerData
+public class BaseTowerData
 {
-	[SerializeField] private float m_shootInterval = 0.5f;
-	[SerializeField] private float m_rangeToFindEnemy = 20f;
-	[SerializeField] private GameObject m_cannonProjectilePrefab;
-	[SerializeField] private GameObject m_guidedProjectilePrefab;
+	[SerializeField] protected float m_shootInterval = 0.5f;
+	[SerializeField] protected float m_rangeToFindEnemy = 20f;
+	[SerializeField] private GameObject m_projectilePrefab;
 
 	public float shootInterval => m_shootInterval;
 	public float rangeToFindEnemy => m_rangeToFindEnemy;
-	public GameObject cannonProjectilePrefab => m_cannonProjectilePrefab;
-	public GameObject guidedProjectilePrefab => m_guidedProjectilePrefab;
+	public GameObject projectilePrefab => m_projectilePrefab;
+}
+
+[System.Serializable]
+public class CannonTowerData : BaseTowerData
+{
+	[SerializeField] private float m_cannonTowerRotationSpeed = 1f;
+
+	public float cannonTowerRotationSpeed => m_cannonTowerRotationSpeed;
+}
+
+[System.Serializable]
+public class ProjectileTowerData : BaseTowerData
+{
+
 }
 
 [System.Serializable]
 public class BaseProjectileData
 {
-	[SerializeField] private float m_speed = 20f;
+	[SerializeField] protected float m_speed = 20f;
+	[SerializeField] protected int m_damage = 10;
 
 	public float speed => m_speed;
-}
-
-[System.Serializable]
-public class CannonProjectileData
-{
-	[SerializeField] private int m_damage = 10;
-
 	public int damage => m_damage;
 }
 
 [System.Serializable]
-public class GuidedProjectileData
+public class CannonProjectileData : BaseProjectileData
+{
+
+}
+
+[System.Serializable]
+public class GuidedProjectileData : BaseProjectileData
 {
 	[SerializeField] private Vector3 m_spawnOffset = new Vector3(0, 5.5f, 0);
 
 	public Vector3 spawnOffset => m_spawnOffset;
+
 }
