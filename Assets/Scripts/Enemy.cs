@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Events;
 
 public class Enemy : MonoBehaviour
@@ -7,8 +8,6 @@ public class Enemy : MonoBehaviour
 	public EnemyEvent OnDied = new EnemyEvent();
 
 	[SerializeField] private Transform m_moveTarget;
-	//[SerializeField] private float m_speed = 10f;
-	//[SerializeField] private int m_maxHP = 30;
 	private const float REACH_DISTANCE = 0.3f;
 
 	private int m_currentHP;
@@ -18,25 +17,6 @@ public class Enemy : MonoBehaviour
 	public Vector3 Velocity => moveTargetPosition != null ? (moveTargetPosition - transform.position).normalized * GameConfig.instance.enemyData.speed : Vector3.zero;
 	public bool hasReachedTarget => Vector3.Distance(transform.position, moveTargetPosition) <= REACH_DISTANCE;
 	public bool isAlive => m_isAlive;
-	//public float speed => m_speed;
-	//public int maxHP => m_maxHP;
-	public int currentHP => m_currentHP;
-	public float healthPercent => (float)m_currentHP / GameConfig.instance.enemyData.maxHP;
-
-	/*public Enemy()
-	{
-		var newEnemy = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-		newEnemy.transform.position = transform.position;
-		// Отключение влияния гравитации на созданный объект врага
-		var newEnemyRigidbody = newEnemy.AddComponent<Rigidbody>();
-		newEnemyRigidbody.useGravity = false;
-		// Смена цвета врага
-		var newEnemyRenderer = newEnemy.GetComponent<Renderer>();
-		newEnemyRenderer.material.color = Color.magenta;
-
-		var enemyComponent = newEnemy.AddComponent<Enemy>();
-		return;
-	}*/
 
 	private void Start()
 	{
