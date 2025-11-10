@@ -26,6 +26,14 @@ public class GameConfig : ScriptableObject
 	[Space(5)]
 	[SerializeField] private List<GuidedProjectileData> m_guidedProjectileSettings;
 
+	[Space(20)]
+	[SerializeField] private CannonTowerData m_defaultCannonTowerSettings;
+	[SerializeField] private ProjectileTowerData m_defaultGuidedTowerSettings;
+	[Space(5)]
+	[SerializeField] private CannonProjectileData m_defaultCannonProjectileSettings;
+	[SerializeField] private GuidedProjectileData m_defaultGuidedProjectileSettings;
+
+
 	public EnemyData enemyData => m_enemySettings;
 
 	public SpawnerData enemySpawnSettings => m_enemySpawnSettings;
@@ -36,18 +44,26 @@ public class GameConfig : ScriptableObject
 	{
 		if (m_cannonTowerSettings.Count > id)
 		{
+			if (m_cannonTowerSettings[id].projectilePrefab == null)
+			{
+				m_cannonTowerSettings[id].projectilePrefab = m_defaultCannonTowerSettings.projectilePrefab;
+			}
 			return m_cannonTowerSettings[id];
 		}
-		return new CannonTowerData();
+		return m_defaultCannonTowerSettings;
 	}
 
 	public ProjectileTowerData GetGuidedTowerSettings(int id)
 	{
 		if (m_guidedTowerSettings.Count > id)
 		{
+			if (m_guidedTowerSettings[id].projectilePrefab == null)
+			{
+				m_guidedTowerSettings[id].projectilePrefab = m_defaultGuidedTowerSettings.projectilePrefab;
+			}
 			return m_guidedTowerSettings[id];
 		}
-		return new ProjectileTowerData();
+		return m_defaultGuidedTowerSettings;
 	}
 
 	public CannonProjectileData GetCannonProjectileSettings(int id)
@@ -56,7 +72,7 @@ public class GameConfig : ScriptableObject
 		{
 			return m_cannonProjectileSettings[id];
 		}
-		return new CannonProjectileData();
+		return m_defaultCannonProjectileSettings;
 	}
 
 	public GuidedProjectileData GetGuidedProjectileSettings(int id)
@@ -65,7 +81,7 @@ public class GameConfig : ScriptableObject
 		{
 			return m_guidedProjectileSettings[id];
 		}
-		return new GuidedProjectileData();
+		return m_defaultGuidedProjectileSettings;
 	}
 
 
@@ -115,11 +131,23 @@ public class BaseTowerData
 {
 	[SerializeField] protected float m_shootInterval = 0.5f;
 	[SerializeField] protected float m_rangeToFindEnemy = 20f;
+	[SerializeField] protected float m_rotatingSpeed = 2f;
 	[SerializeField] private GameObject m_projectilePrefab;
 
 	public float shootInterval => m_shootInterval;
 	public float rangeToFindEnemy => m_rangeToFindEnemy;
-	public GameObject projectilePrefab => m_projectilePrefab;
+	public float rotatingSpeed => m_rotatingSpeed;
+	public GameObject projectilePrefab
+	{
+		get
+		{
+			return m_projectilePrefab;
+		}
+		set
+		{
+			m_projectilePrefab = value;
+		}
+	}
 }
 
 [System.Serializable]
