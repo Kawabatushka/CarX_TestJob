@@ -3,23 +3,45 @@ using System.Collections;
 
 public class Spawner : MonoBehaviour
 {
-	public float m_interval = 3;
-	public GameObject m_moveTarget;
+	[SerializeField] private Transform m_moveTarget;
 
-	private float m_lastSpawn = -1;
+	private float m_lastSpawn = -1f;
 
-	void Update()
+	private void Start()
 	{
-		if (Time.time > m_lastSpawn + m_interval)
+		if (EnemyManager.instance == null)
 		{
-			var newMonster = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-			var r = newMonster.AddComponent<Rigidbody>();
-			r.useGravity = false;
-			newMonster.transform.position = transform.position;
-			var monsterBeh = newMonster.AddComponent<Monster>();
-			monsterBeh.m_moveTarget = m_moveTarget;
+			var managerObject = new GameObject("EnemyManager");
+			managerObject.AddComponent<EnemyManager>();
+		}
+	}
 
+	private void Update()
+	{
+		if (Time.time >= m_lastSpawn + GameConfig.instance.enemySpawnSettings.spawnInterval)
+		{
+			SpawnEnemy();
 			m_lastSpawn = Time.time;
 		}
+	}
+
+	private void SpawnEnemy()
+	{
+		if (m_moveTarget == null)
+		{
+			Debug.LogError("Move Target не задан");
+			return;
+		}
+		if (GameConfig.instance?.enemySpawnSettings?.enemyPrefab == null)
+		{
+			Debug.LogError("Enemy Prefab не задан");
+			return;
+		}
+
+		var newEnemy = Instantiate(GameConfig.instance.enemySpawnSettings.enemyPrefab);
+		newEnemy.transform.position = this.transform.position;
+		newEnemy.TryGetComponent(out Enemy enemyComponent);
+		enemyComponent.SetMoveTarget(m_moveTarget);
+		EnemyManager.instance.RegisterEnemy(enemyComponent);
 	}
 }
