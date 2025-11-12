@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class BaseTower : MonoBehaviour
 {
+	[Tooltip("Выбор пресета из GameConfig")]
 	[SerializeField] protected int m_towerSettingsId = 0;
+	[Tooltip("Выбор пресета из GameConfig")]
 	[SerializeField] protected int m_projectileSettingsId = 0;
 	protected Enemy m_currentTarget;
 	protected float m_lastShotTime = -1f;
 
-	// Добавим корутину с интервалом поиска, чтобы не вызывать EnemyManager.instance каждый кадр
 	private Coroutine m_targetSearchCoroutine;
-	private const float TARGET_SEARCH_INTERVAL = 0.1f;
+	private const float TargetSearchInterval = 0.1f;
 
 	private GameConfig m_gameConfigInstance;
 
@@ -51,7 +51,7 @@ public abstract class BaseTower : MonoBehaviour
 		while (true)
 		{
 			FindTarget();
-			yield return new WaitForSeconds(TARGET_SEARCH_INTERVAL);
+			yield return new WaitForSeconds(TargetSearchInterval);
 		}
 	}
 

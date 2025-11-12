@@ -38,7 +38,6 @@ public class Spawner : MonoBehaviour
 			return;
 		}
 
-
 		var newEnemy = Instantiate(GameConfig.instance.enemySpawnSettings.enemyPrefab);
 		newEnemy.transform.position = this.transform.position;
 		newEnemy.TryGetComponent(out Enemy enemyComponent);

@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-/// <summary>
-/// TODO - переименовать класс в ProjectileTower
-/// </summary>
 public class GuidedTower : BaseTower
 {
 	protected override bool CanShoot()
@@ -30,4 +27,6 @@ public class GuidedTower : BaseTower
 
 		m_lastShotTime = Time.time;
 	}
+
+	protected override void RotateTower() { }
 }

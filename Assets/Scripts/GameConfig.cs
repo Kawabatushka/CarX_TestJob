@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// TODO - добавить класс манагер для конфига, чтоб только 1 экземпляр был создан и использовался везде
-/// </summary>
-
 [CreateAssetMenu(fileName = "GameConfig", menuName = "Configs/GameConfig")]
 public class GameConfig : ScriptableObject
 {
@@ -107,8 +103,8 @@ public class GameConfig : ScriptableObject
 [System.Serializable]
 public class EnemyData
 {
-	[SerializeField] private float m_speed = 7f;
-	[SerializeField] private int m_maxHP = 30;
+	[SerializeField] private float m_speed = 10f;
+	[SerializeField] private int m_maxHP = 200;
 
 	public int maxHP => m_maxHP;
 	public float speed => m_speed;
@@ -131,12 +127,10 @@ public class BaseTowerData
 {
 	[SerializeField] protected float m_shootInterval = 0.5f;
 	[SerializeField] protected float m_rangeToFindEnemy = 20f;
-	[SerializeField] protected float m_rotatingSpeed = 2f;
 	[SerializeField] private GameObject m_projectilePrefab;
 
 	public float shootInterval => m_shootInterval;
 	public float rangeToFindEnemy => m_rangeToFindEnemy;
-	public float rotatingSpeed => m_rotatingSpeed;
 	public GameObject projectilePrefab
 	{
 		get
@@ -153,9 +147,9 @@ public class BaseTowerData
 [System.Serializable]
 public class CannonTowerData : BaseTowerData
 {
-	[SerializeField] private float m_cannonTowerRotationSpeed = 1f;
+	[SerializeField] protected float m_rotationSpeed = 20f;
 
-	public float cannonTowerRotationSpeed => m_cannonTowerRotationSpeed;
+	public float rotationSpeed => m_rotationSpeed;
 }
 
 [System.Serializable]
