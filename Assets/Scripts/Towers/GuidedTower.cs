@@ -15,7 +15,7 @@ public class GuidedTower : BaseTower
 			Debug.LogError($"Guided Projectile Prefab не задан\n" + this.name);
 			return false;
 		}
-		return Time.time >= m_lastShotTime + GameConfig.instance.GetGuidedTowerSettings(m_towerSettingsId).shootInterval; // NRE
+		return Time.time >= m_lastShotTime + GameConfig.instance.GetGuidedTowerSettings(m_towerSettingsId).shootInterval;
 	}
 
 	protected override void Shoot()

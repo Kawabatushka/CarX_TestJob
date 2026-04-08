@@ -24,7 +24,7 @@ public class CannonTower : BaseTower
 			Debug.LogError($"Cannon Projectile Prefab не задан\n" + this.name);
 			return false;
 		}
-		return Time.time >= m_lastShotTime + GameConfig.instance.towerSettings.shootInterval; // NRE
+		return Time.time >= m_lastShotTime + GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId).shootInterval;
 	}
 	protected override void RotateTower()
 	{

@@ -11,7 +11,6 @@ public class GameConfig : ScriptableObject
 	[Space(10)]
 	[SerializeField] private SpawnerData m_enemySpawnSettings;
 
-	private BaseTowerData m_towerSettings;
 	[Space(10)]
 	[SerializeField] private List<CannonTowerData> m_cannonTowerSettings;
 	[Space(5)]
@@ -33,8 +32,6 @@ public class GameConfig : ScriptableObject
 	public EnemyData enemyData => m_enemySettings;
 
 	public SpawnerData enemySpawnSettings => m_enemySpawnSettings;
-
-	public BaseTowerData towerSettings => m_towerSettings;
 
 	public CannonTowerData GetCannonTowerSettings(int id)
 	{
@@ -114,11 +111,9 @@ public class EnemyData
 public class SpawnerData
 {
 	[SerializeField] private GameObject m_enemyPrefab;
-	//[SerializeField] private Transform m_moveTarget;
 	[SerializeField] private float m_spawnInterval = 1.5f;
 
 	public GameObject enemyPrefab => m_enemyPrefab;
-	//public Transform moveTarget => m_moveTarget;
 	public float spawnInterval => m_spawnInterval;
 }
 
