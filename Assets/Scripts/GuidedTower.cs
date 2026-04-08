@@ -3,14 +3,19 @@ using System.Collections;
 
 public class GuidedTower : BaseTower
 {
+	protected override void GetTarget()
+	{
+		m_currentTarget = EnemyManager.instance.GetClosestEnemy(transform.position, GameConfig.instance.GetGuidedTowerSettings(m_towerSettingsId).rangeToFindEnemy);
+	}
+
 	protected override bool CanShoot()
 	{
-		if (gameConfigInstance.GetGuidedTowerSettings(m_towerSettingsId)?.projectilePrefab == null)
+		if (GameConfig.instance.GetGuidedTowerSettings(m_towerSettingsId)?.projectilePrefab == null)
 		{
 			Debug.LogError($"Guided Projectile Prefab не задан\n" + this.name);
 			return false;
 		}
-		return base.CanShoot();
+		return Time.time >= m_lastShotTime + GameConfig.instance.GetGuidedTowerSettings(m_towerSettingsId).shootInterval; // NRE
 	}
 
 	protected override void Shoot()
@@ -28,5 +33,8 @@ public class GuidedTower : BaseTower
 		m_lastShotTime = Time.time;
 	}
 
-	protected override void RotateTower() { }
+	protected override float GetRangeToFindEnemy()
+	{
+		return GameConfig.instance.GetGuidedTowerSettings(m_towerSettingsId).rangeToFindEnemy;
+	}
 }

@@ -14,26 +14,14 @@ public abstract class BaseTower : MonoBehaviour
 	private Coroutine m_targetSearchCoroutine;
 	private const float TargetSearchInterval = 0.1f;
 
-	private GameConfig m_gameConfigInstance;
 
-	public GameConfig gameConfigInstance
-	{
-		get
-		{
-			if (m_gameConfigInstance == null)
-			{
-				m_gameConfigInstance = GameConfig.instance;
-			}
-			return m_gameConfigInstance;
-		}
-	}
 
-	protected virtual void Start()
+	protected void Start()
 	{
 		m_targetSearchCoroutine = StartCoroutine(TargetSearchRoutine());
 	}
 
-	protected virtual void Update()
+	protected void Update()
 	{
 		if (m_currentTarget != null && m_currentTarget.isAlive)
 		{
@@ -50,7 +38,7 @@ public abstract class BaseTower : MonoBehaviour
 	{
 		while (true)
 		{
-			FindTarget();
+			GetTarget();
 			yield return new WaitForSeconds(TargetSearchInterval);
 		}
 	}
@@ -64,23 +52,19 @@ public abstract class BaseTower : MonoBehaviour
 		}
 	}
 
-	protected virtual void FindTarget()
-	{
-		m_currentTarget = EnemyManager.instance.GetClosestEnemy(transform.position, gameConfigInstance.towerSettings.rangeToFindEnemy);
-	}
+	protected abstract void GetTarget();
 
-	protected abstract void RotateTower();
+	protected virtual void RotateTower() { }
 
-	protected virtual bool CanShoot()
-	{
-		return Time.time >= m_lastShotTime + gameConfigInstance.towerSettings.shootInterval;
-	}
+	protected abstract bool CanShoot();
 
 	protected abstract void Shoot();
 
-	protected virtual void OnDrawGizmosSelected()
+	protected void OnDrawGizmosSelected()
 	{
 		Gizmos.color = UnityEngine.Color.green;
-		Gizmos.DrawWireSphere(transform.position, gameConfigInstance.towerSettings.rangeToFindEnemy);
+		Gizmos.DrawWireSphere(transform.position, GetRangeToFindEnemy());
 	}
+
+	protected abstract float GetRangeToFindEnemy();
 }

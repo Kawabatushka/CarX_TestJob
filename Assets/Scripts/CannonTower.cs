@@ -12,14 +12,19 @@ public class CannonTower : BaseTower
 	private Vector3 m_predictedPosition;
 	private float timeToTarget;
 
+	protected override void GetTarget()
+	{
+		m_currentTarget = EnemyManager.instance.GetClosestEnemy(transform.position, GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId).rangeToFindEnemy);
+	}
+
 	protected override bool CanShoot()
 	{
-		if (gameConfigInstance.GetCannonTowerSettings(m_towerSettingsId)?.projectilePrefab == null)
+		if (GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId)?.projectilePrefab == null)
 		{
 			Debug.LogError($"Cannon Projectile Prefab не задан\n" + this.name);
 			return false;
 		}
-		return base.CanShoot();
+		return Time.time >= m_lastShotTime + GameConfig.instance.towerSettings.shootInterval; // NRE
 	}
 	protected override void RotateTower()
 	{
@@ -122,6 +127,11 @@ public class CannonTower : BaseTower
 
 		m_predictedPosition = m_currentTarget.transform.position + m_currentTarget.velocity * timeToTarget;
 		return (m_predictedPosition - m_shootStartPoint.position).normalized;
+	}
+
+	protected override float GetRangeToFindEnemy()
+	{
+		return GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId).rangeToFindEnemy;
 	}
 
 	private void OnDrawGizmos()

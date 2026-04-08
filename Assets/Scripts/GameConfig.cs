@@ -180,5 +180,4 @@ public class GuidedProjectileData : BaseProjectileData
 	[SerializeField] private Vector3 m_spawnOffset = new Vector3(0, 5.5f, 0);
 
 	public Vector3 spawnOffset => m_spawnOffset;
-
 }
