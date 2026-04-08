@@ -9,3 +9,5 @@ Unity version 2022.3.19f1
 - исключил тяжелые циклы с методов FindObjectsOfType из Update'ов
 - добавил конфиг GameConfig для удобной настройки всех параметров
 - добавил стрельбу на упреждение и поворот башни
+
+<img width="1852" height="955" alt="image" src="https://github.com/user-attachments/assets/facb9b55-d0a4-4b1c-a603-24df99a78039" />
