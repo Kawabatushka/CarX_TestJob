@@ -35,7 +35,7 @@ public class GameConfig : ScriptableObject
 
 	public CannonTowerData GetCannonTowerSettings(int id)
 	{
-		if (m_cannonTowerSettings.Count > id)
+		if (m_cannonTowerSettings.Count > id && id >= 0)
 		{
 			if (m_cannonTowerSettings[id].projectilePrefab == null)
 			{
@@ -48,7 +48,7 @@ public class GameConfig : ScriptableObject
 
 	public ProjectileTowerData GetGuidedTowerSettings(int id)
 	{
-		if (m_guidedTowerSettings.Count > id)
+		if (m_guidedTowerSettings.Count > id && id >= 0)
 		{
 			if (m_guidedTowerSettings[id].projectilePrefab == null)
 			{
@@ -61,7 +61,7 @@ public class GameConfig : ScriptableObject
 
 	public CannonProjectileData GetCannonProjectileSettings(int id)
 	{
-		if (m_cannonProjectileSettings.Count > id)
+		if (m_cannonProjectileSettings.Count > id && id >= 0)
 		{
 			return m_cannonProjectileSettings[id];
 		}
@@ -70,7 +70,7 @@ public class GameConfig : ScriptableObject
 
 	public GuidedProjectileData GetGuidedProjectileSettings(int id)
 	{
-		if (m_guidedProjectileSettings.Count > id)
+		if (m_guidedProjectileSettings.Count > id && id >= 0)
 		{
 			return m_guidedProjectileSettings[id];
 		}
