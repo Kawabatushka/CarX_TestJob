@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using Enemy;
+using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
@@ -40,7 +40,7 @@ public class Spawner : MonoBehaviour
 
 		var newEnemy = Instantiate(GameConfig.instance.enemySpawnSettings.enemyPrefab);
 		newEnemy.transform.position = this.transform.position;
-		newEnemy.TryGetComponent(out Enemy enemyComponent);
+		newEnemy.TryGetComponent(out SimpleEnemy enemyComponent);
 		enemyComponent.SetMoveTarget(m_moveTarget);
 		EnemyManager.instance.RegisterEnemy(enemyComponent);
 	}

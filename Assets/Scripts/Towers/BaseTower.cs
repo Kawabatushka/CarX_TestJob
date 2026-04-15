@@ -1,70 +1,74 @@
 ﻿using System;
 using System.Collections;
+using Enemy;
 using UnityEngine;
 
-public abstract class BaseTower : MonoBehaviour
+namespace Tower
 {
-	[Tooltip("Выбор пресета из GameConfig")]
-	[SerializeField] protected int m_towerSettingsId = 0;
-	[Tooltip("Выбор пресета из GameConfig")]
-	[SerializeField] protected int m_projectileSettingsId = 0;
-	protected Enemy m_currentTarget;
-	protected float m_lastShotTime = -1f;
-
-	private Coroutine m_targetSearchCoroutine;
-	private const float TargetSearchInterval = 0.1f;
-
-
-
-	protected void Start()
+	public abstract class BaseTower : MonoBehaviour
 	{
-		m_targetSearchCoroutine = StartCoroutine(TargetSearchRoutine());
-	}
+		[Tooltip("Выбор пресета из GameConfig")]
+		[SerializeField] protected int m_towerSettingsId = 0;
+		[Tooltip("Выбор пресета из GameConfig")]
+		[SerializeField] protected int m_projectileSettingsId = 0;
+		protected SimpleEnemy m_currentTarget;
+		protected float m_lastShotTime = -1f;
 
-	protected void Update()
-	{
-		if (m_currentTarget != null && m_currentTarget.isAlive)
+		private Coroutine m_targetSearchCoroutine;
+		private const float TargetSearchInterval = 0.1f;
+
+
+
+		protected void Start()
 		{
-			RotateTower();
+			m_targetSearchCoroutine = StartCoroutine(TargetSearchRoutine());
+		}
 
-			if (CanShoot())
+		protected void Update()
+		{
+			if (m_currentTarget != null && m_currentTarget.isAlive)
 			{
-				Shoot();
+				RotateTower();
+
+				if (CanShoot())
+				{
+					Shoot();
+				}
 			}
 		}
-	}
 
-	protected IEnumerator TargetSearchRoutine()
-	{
-		while (true)
+		protected IEnumerator TargetSearchRoutine()
 		{
-			GetTarget();
-			yield return new WaitForSeconds(TargetSearchInterval);
+			while (true)
+			{
+				GetTarget();
+				yield return new WaitForSeconds(TargetSearchInterval);
+			}
 		}
-	}
 
-	protected virtual void OnDisable()
-	{
-		// Останавливаем корутину при выключении объекта
-		if (m_targetSearchCoroutine != null)
+		protected virtual void OnDisable()
 		{
-			StopCoroutine(m_targetSearchCoroutine);
+			// Останавливаем корутину при выключении объекта
+			if (m_targetSearchCoroutine != null)
+			{
+				StopCoroutine(m_targetSearchCoroutine);
+			}
 		}
+
+		protected abstract void GetTarget();
+
+		protected virtual void RotateTower() { }
+
+		protected abstract bool CanShoot();
+
+		protected abstract void Shoot();
+
+		protected void OnDrawGizmosSelected()
+		{
+			Gizmos.color = UnityEngine.Color.green;
+			Gizmos.DrawWireSphere(transform.position, GetRangeToFindEnemy());
+		}
+
+		protected abstract float GetRangeToFindEnemy();
 	}
-
-	protected abstract void GetTarget();
-
-	protected virtual void RotateTower() { }
-
-	protected abstract bool CanShoot();
-
-	protected abstract void Shoot();
-
-	protected void OnDrawGizmosSelected()
-	{
-		Gizmos.color = UnityEngine.Color.green;
-		Gizmos.DrawWireSphere(transform.position, GetRangeToFindEnemy());
-	}
-
-	protected abstract float GetRangeToFindEnemy();
 }

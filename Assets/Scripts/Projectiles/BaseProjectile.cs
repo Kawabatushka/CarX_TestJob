@@ -1,38 +1,41 @@
 ﻿using System;
-using System.Collections.Generic;
+using Enemy;
 using UnityEngine;
 
-public abstract class BaseProjectile : MonoBehaviour
+namespace Projectile
 {
-	protected int m_damage;
-	protected float m_speed;
-
-	protected bool m_isLaunched = false;
-
-	public virtual void Launch(float speed, int damage)
+	public abstract class BaseProjectile : MonoBehaviour
 	{
-		m_speed = speed;
-		m_damage = damage;
-		m_isLaunched = true;
-	}
+		protected int m_damage;
+		protected float m_speed;
 
-	protected abstract void Move();
+		protected bool m_isLaunched = false;
 
-	protected virtual void Update()
-	{
-		if (m_isLaunched)
+		public virtual void Launch(float speed, int damage)
 		{
-			Move();
+			m_speed = speed;
+			m_damage = damage;
+			m_isLaunched = true;
 		}
-	}
 
-	protected virtual void OnTriggerEnter(Collider other)
-	{
-		var enemy = other.GetComponent<Enemy>();
-		if (enemy != null && enemy.isAlive)
+		protected abstract void Move();
+
+		protected virtual void Update()
 		{
-			enemy.ApplyDamage(m_damage);
-			Destroy(gameObject);
+			if (m_isLaunched)
+			{
+				Move();
+			}
+		}
+
+		protected virtual void OnTriggerEnter(Collider other)
+		{
+			var enemy = other.GetComponent<SimpleEnemy>();
+			if (enemy != null && enemy.isAlive)
+			{
+				enemy.ApplyDamage(m_damage);
+				Destroy(gameObject);
+			}
 		}
 	}
 }

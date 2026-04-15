@@ -1,29 +1,31 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class GuidedProjectile : BaseProjectile
+namespace Projectile
 {
-	private GameObject m_target;
-
-	public void Launch(GameObject target, float speed, int damage)
+	public class GuidedProjectile : BaseProjectile
 	{
-		base.Launch(speed, damage);
-		m_target = target;
-	}
+		private GameObject m_target;
 
-	protected override void Move()
-	{
-		if (m_target == null)
+		public void Launch(GameObject target, float speed, int damage)
 		{
-			Destroy(gameObject);
-			return;
+			base.Launch(speed, damage);
+			m_target = target;
 		}
 
-		Vector3 translation = m_target.transform.position - transform.position;
-		if (translation.magnitude > m_speed * Time.deltaTime)
+		protected override void Move()
 		{
-			translation = translation.normalized * (m_speed * Time.deltaTime);
+			if (m_target == null)
+			{
+				Destroy(gameObject);
+				return;
+			}
+
+			Vector3 translation = m_target.transform.position - transform.position;
+			if (translation.magnitude > m_speed * Time.deltaTime)
+			{
+				translation = translation.normalized * (m_speed * Time.deltaTime);
+			}
+			transform.Translate(translation, Space.World);
 		}
-		transform.Translate(translation, Space.World);
 	}
 }

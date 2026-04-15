@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 
-public class CannonProjectile : BaseProjectile
+namespace Projectile
 {
-	protected override void Move()
+	public class CannonProjectile : BaseProjectile
 	{
-		transform.position += transform.forward * (m_speed * Time.deltaTime);
+		protected override void Move()
+		{
+			transform.position += transform.forward * (m_speed * Time.deltaTime);
+		}
 	}
 }
