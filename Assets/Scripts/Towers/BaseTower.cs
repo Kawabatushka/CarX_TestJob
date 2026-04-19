@@ -12,7 +12,7 @@ namespace Tower
 		[Tooltip("Выбор пресета из GameConfig")]
 		[SerializeField] protected int m_projectileSettingsId = 0;
 		protected SimpleEnemy m_currentTarget;
-		protected float m_lastShotTime = -1f;
+		protected float m_lastShootTime = -1f;
 
 		private Coroutine m_targetSearchCoroutine;
 		private const float TargetSearchInterval = 0.1f;
@@ -41,7 +41,7 @@ namespace Tower
 		{
 			while (true)
 			{
-				GetTarget();
+				FindTarget();
 				yield return new WaitForSeconds(TargetSearchInterval);
 			}
 		}
@@ -55,14 +55,10 @@ namespace Tower
 			}
 		}
 
-		protected abstract void GetTarget();
-
 		protected virtual void RotateTower() { }
-
+		protected abstract void FindTarget();
 		protected abstract bool CanShoot();
-
 		protected abstract void Shoot();
-
 		protected void OnDrawGizmosSelected()
 		{
 			Gizmos.color = UnityEngine.Color.green;

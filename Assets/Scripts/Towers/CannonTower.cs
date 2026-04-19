@@ -10,12 +10,16 @@ namespace Tower
 		[SerializeField] private Transform m_shootStartPoint;
 		[SerializeField] protected Transform m_horizontalRotatingTowerPart;
 		[SerializeField] protected Transform m_verticalRotatingTowerPart;
+
+		[Tooltip("Max angles difference for a shot (in fractions)")]
+		[SerializeField] private float m_maxCannonAngleDifference = 0.1f;
+
 		private Quaternion shootRotation;
 		private Vector3 m_shootDirection;
 		private Vector3 m_predictedPosition;
 		private float timeToTarget;
 
-		protected override void GetTarget()
+		protected override void FindTarget()
 		{
 			m_currentTarget = EnemyManager.instance.GetClosestEnemy(transform.position, GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId).rangeToFindEnemy);
 		}
@@ -27,22 +31,42 @@ namespace Tower
 				Debug.LogError($"Cannon Projectile Prefab не задан\n" + this.name);
 				return false;
 			}
-			return Time.time >= m_lastShotTime + GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId).shootInterval;
+
+			m_shootDirection = CalculateShootDirection();
+
+			if (IsReachedRotation(m_maxCannonAngleDifference))
+			{
+				return Time.time >= m_lastShootTime + GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId).shootInterval;
+			}
+			else
+			{
+				return false;
+			}
 		}
+		private bool IsReachedRotation(float maxAngleDifference)
+		{
+			Vector3 predictedVector = m_predictedPosition - m_shootStartPoint.position;
+			
+			bool isHorizontalRotReached = Mathf.Abs(m_horizontalRotatingTowerPart.forward.x - predictedVector.normalized.x) <= maxAngleDifference;
+			bool isVerticalRotReached = Mathf.Abs(m_verticalRotatingTowerPart.forward.y - predictedVector.normalized.y) <= maxAngleDifference;
+			
+			return isHorizontalRotReached && isVerticalRotReached;
+		}
+
 		protected override void RotateTower()
 		{
 			#region Горизонтальный поворот
 			// Направление, куда надо повернуть пушку
-			Vector3 directionToTarget = m_predictedPosition - m_horizontalRotatingTowerPart.position;
+			Vector3 horizontalDirectionToTarget = m_predictedPosition - m_horizontalRotatingTowerPart.position;
 
 			// Проверяем во избежание бесконечного приближения поворота пушки к directionToTarget
-			if (directionToTarget != Vector3.zero)
+			if (horizontalDirectionToTarget != Vector3.zero)
 			{
 				// Игнорируем разницу по Y для горизонтального вращения
-				directionToTarget.y = 0;
+				horizontalDirectionToTarget.y = 0;
 
 				// Из направления получаем поворот
-				Quaternion targetHorizontalRotation = Quaternion.LookRotation(directionToTarget);
+				Quaternion targetHorizontalRotation = Quaternion.LookRotation(horizontalDirectionToTarget);
 
 				// Вращаем пушку к цели с постоянной скоростью (через Lerp() поворот будет не равномерным, а с отрицательным ускорением)
 				m_horizontalRotatingTowerPart.rotation = Quaternion.RotateTowards(
@@ -54,18 +78,22 @@ namespace Tower
 			#endregion
 
 			#region Вертикальный поворот
-			// Вращение будет происходить по локальной оси X
-			Vector3 localTargetPos = m_horizontalRotatingTowerPart.InverseTransformPoint(m_predictedPosition);
-			float targetVerticalAngle = Mathf.Atan2(localTargetPos.y, localTargetPos.z) * Mathf.Rad2Deg;
-			targetVerticalAngle = Mathf.Clamp(targetVerticalAngle, -30f, 60f);
+			// Направление, куда надо повернуть пушку
+			Vector3 verticalDirectionToTarget = m_predictedPosition - m_verticalRotatingTowerPart.position;
 
-			// Вращаем дуло пушки по оси X для вертикального вращения
-			Quaternion targetVerticalRotation = Quaternion.Euler(-targetVerticalAngle, 0, 0);
-			m_verticalRotatingTowerPart.localRotation = Quaternion.RotateTowards(
-				m_verticalRotatingTowerPart.localRotation,
-				targetVerticalRotation,
-				GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId).rotationSpeed * Time.deltaTime
-			);
+			// Проверяем во избежание бесконечного приближения поворота пушки к directionToTarget
+			if (verticalDirectionToTarget != Vector3.zero)
+			{
+				// Из направления получаем поворот
+				Quaternion targetVerticalRotation = Quaternion.LookRotation(verticalDirectionToTarget);
+
+				// Вращаем пушку к цели с постоянной скоростью (через Lerp() поворот будет не равномерным, а с отрицательным ускорением)
+				m_verticalRotatingTowerPart.rotation = Quaternion.RotateTowards(
+					m_verticalRotatingTowerPart.rotation,
+					targetVerticalRotation,
+					GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId).rotationSpeed * Time.deltaTime
+				);
+			}
 			#endregion
 		}
 
@@ -77,7 +105,6 @@ namespace Tower
 				return;
 			}
 
-			m_shootDirection = CalculateShootDirection();
 			shootRotation = Quaternion.LookRotation(m_shootDirection);
 
 			var projectile = Instantiate(GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId).projectilePrefab, m_shootStartPoint.position, shootRotation);
@@ -92,7 +119,7 @@ namespace Tower
 				Debug.LogError($"Cannon projectile component = null");
 			}
 
-			m_lastShotTime = Time.time;
+			m_lastShootTime = Time.time;
 		}
 
 		private Vector3 CalculateShootDirection()
@@ -139,15 +166,22 @@ namespace Tower
 
 		private void OnDrawGizmos()
 		{
+			// Направляющий вектор пушки
+			Gizmos.color = Color.cyan;
+			Gizmos.DrawLine(m_verticalRotatingTowerPart.position, m_verticalRotatingTowerPart.position + m_verticalRotatingTowerPart.forward * 50f);
+
 			if (m_currentTarget != null && m_shootStartPoint != null)
 			{
 				// Линия к текущей позиции цели
-				Gizmos.color = Color.yellow;
+				Gizmos.color = Color.magenta;
 				Gizmos.DrawLine(m_shootStartPoint.position, m_currentTarget.transform.position);
 
 				// Точка - предсказанная позиция для выстрела
 				Gizmos.color = Color.red;
 				Gizmos.DrawSphere(m_predictedPosition, 0.2F);
+				// Направляющий вектор пушки
+				Gizmos.color = Color.red;
+				Gizmos.DrawLine(m_shootStartPoint.position, m_predictedPosition);
 			}
 		}
 	}
