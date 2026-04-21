@@ -4,21 +4,20 @@ using UnityEngine;
 
 namespace Enemy
 {
-	class EnemyManager : MonoBehaviour
+	public class EnemyManager : MonoBehaviour
 	{
-		private static EnemyManager m_instance;
-		public static EnemyManager instance => m_instance;
+		public static EnemyManager instance { get; private set; }
 
 		private HashSet<SimpleEnemy> m_activeEnemies = new HashSet<SimpleEnemy>();
 
 		private void Awake()
 		{
-			if (m_instance != null && m_instance != this)
+			if (instance != null && instance != this)
 			{
 				Destroy(gameObject);
 				return;
 			}
-			m_instance = this;
+			instance = this;
 		}
 
 		public void RegisterEnemy(SimpleEnemy enemy)
@@ -33,6 +32,8 @@ namespace Enemy
 			{
 				m_activeEnemies.Remove(enemy);
 			}
+
+			enemy.OnDied.RemoveListener(UnregisterEnemy);
 		}
 
 		public SimpleEnemy GetClosestEnemy(Vector3 position, float range)

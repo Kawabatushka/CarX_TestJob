@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Projectile;
 using Enemy;
+using Pooling;
 
 namespace Tower
 {
@@ -23,11 +24,15 @@ namespace Tower
 
 		protected override void Shoot()
 		{
-			var projectile = Instantiate(GameConfig.instance.GetGuidedTowerSettings(m_towerSettingsId).projectilePrefab,
-				transform.position + GameConfig.instance.GetGuidedProjectileSettings(m_projectileSettingsId).spawnOffset,
-				Quaternion.identity);
+			var poolManager = GuidedProjectilePoolManager.instance;
+			var guidedProjectile = poolManager != null
+				? poolManager.Get(transform.position, transform.rotation)
+				: Instantiate(GameConfig.instance.GetGuidedTowerSettings(
+					m_towerSettingsId).projectilePrefab,
+					transform.position + GameConfig.instance.GetGuidedProjectileSettings(m_projectileSettingsId).spawnOffset,
+					transform.rotation
+					).GetComponent<GuidedProjectile>();
 
-			var guidedProjectile = projectile.GetComponent<GuidedProjectile>();
 			if (guidedProjectile != null && m_currentTarget != null)
 			{
 				guidedProjectile.Launch(m_currentTarget.gameObject, GameConfig.instance.GetGuidedProjectileSettings(m_projectileSettingsId).speed, GameConfig.instance.GetGuidedProjectileSettings(m_projectileSettingsId).damage);

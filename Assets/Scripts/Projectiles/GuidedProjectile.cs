@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using Pooling;
+using Enemy;
 
 namespace Projectile
 {
@@ -16,7 +18,7 @@ namespace Projectile
 		{
 			if (m_target == null)
 			{
-				Destroy(gameObject);
+				GuidedProjectilePoolManager.instance?.Release(this);
 				return;
 			}
 
@@ -26,6 +28,16 @@ namespace Projectile
 				translation = translation.normalized * (m_speed * Time.deltaTime);
 			}
 			transform.Translate(translation, Space.World);
+		}
+
+		protected override void OnTriggerEnter(Collider other)
+		{
+			var enemy = other.GetComponent<SimpleEnemy>();
+			if (enemy != null && enemy.isAlive)
+			{
+				enemy.ApplyDamage(m_damage);
+				GuidedProjectilePoolManager.instance?.Release(this);
+			}
 		}
 	}
 }

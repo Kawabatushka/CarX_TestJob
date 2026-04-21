@@ -108,6 +108,7 @@ namespace Tower
 			shootRotation = Quaternion.LookRotation(m_shootDirection);
 
 			var projectile = Instantiate(GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId).projectilePrefab, m_shootStartPoint.position, shootRotation);
+			//var projectile = GetElement(m_shootStartPoint.position, shootRotation);
 			var cannonProjectile = projectile.GetComponent<CannonProjectile>();
 			if (cannonProjectile != null)
 			{
@@ -168,7 +169,7 @@ namespace Tower
 		{
 			// Направляющий вектор пушки
 			Gizmos.color = Color.cyan;
-			Gizmos.DrawLine(m_verticalRotatingTowerPart.position, m_verticalRotatingTowerPart.position + m_verticalRotatingTowerPart.forward * 50f);
+			Gizmos.DrawLine(m_verticalRotatingTowerPart.position, m_verticalRotatingTowerPart.position + m_verticalRotatingTowerPart.forward * 10f);
 
 			if (m_currentTarget != null && m_shootStartPoint != null)
 			{
