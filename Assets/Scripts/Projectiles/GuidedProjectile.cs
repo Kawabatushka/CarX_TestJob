@@ -6,7 +6,22 @@ namespace Projectile
 {
 	public class GuidedProjectile : BaseProjectile
 	{
-		private GameObject m_target;
+		private GameObject m_target;/* 
+
+		public void OnTakenFromPool()
+		{
+			// Make sure the projectile doesn't keep stale state.
+			m_target = null;
+			m_isLaunched = false;
+		}
+
+		public void OnReturnedToPool()
+		{
+			m_target = null;
+			m_isLaunched = false;
+			m_speed = 0f;
+			m_damage = 0;
+		} */
 
 		public void Launch(GameObject target, float speed, int damage)
 		{

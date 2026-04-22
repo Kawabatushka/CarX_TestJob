@@ -5,7 +5,7 @@ using Pooling;
 
 namespace Projectile
 {
-	public abstract class BaseProjectile : MonoBehaviour, IPoolable1
+	public abstract class BaseProjectile : MonoBehaviour
 	{
 		protected int m_damage;
 		protected float m_speed;

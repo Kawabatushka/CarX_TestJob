@@ -25,13 +25,12 @@ namespace Tower
 		protected override void Shoot()
 		{
 			var poolManager = GuidedProjectilePoolManager.instance;
-			var guidedProjectile = poolManager != null
-				? poolManager.Get(transform.position, transform.rotation)
-				: Instantiate(GameConfig.instance.GetGuidedTowerSettings(
-					m_towerSettingsId).projectilePrefab,
-					transform.position + GameConfig.instance.GetGuidedProjectileSettings(m_projectileSettingsId).spawnOffset,
-					transform.rotation
-					).GetComponent<GuidedProjectile>();
+			if (poolManager == null)
+			{
+				Debug.LogError("PoolManager = null");
+				return;
+			}
+			GuidedProjectile guidedProjectile = (GuidedProjectile)poolManager.Get(transform.position, transform.rotation);
 
 			if (guidedProjectile != null && m_currentTarget != null)
 			{
