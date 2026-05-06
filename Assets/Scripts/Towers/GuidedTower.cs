@@ -24,13 +24,13 @@ namespace Tower
 
 		protected override void Shoot()
 		{
-			var poolManager = GuidedProjectilePoolManager.instance;
+			var poolManager = PoolManager.instance;
 			if (poolManager == null)
 			{
 				Debug.LogError("PoolManager = null");
 				return;
 			}
-			GuidedProjectile guidedProjectile = (GuidedProjectile)poolManager.Get(transform.position, transform.rotation);
+			GuidedProjectile guidedProjectile = poolManager.Get(m_shootStartPoint.position, transform.rotation) as GuidedProjectile;
 
 			if (guidedProjectile != null && m_currentTarget != null)
 			{

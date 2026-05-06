@@ -1,13 +1,13 @@
-using System;
 using Projectile;
 using UnityEngine;
 
 namespace Pooling
 {
-public class GuidedProjectilePoolManager : MonoBehaviour
+    public class PoolManager : MonoBehaviour
     {
-        public static GuidedProjectilePoolManager instance { get; private set; }
+        public static PoolManager instance { get; private set; }
         [SerializeField] private GuidedProjectile prefab;
+        private const string PoolContainerName = "[Pool]";
 
         private IObjectPool m_pool;
 
@@ -27,7 +27,9 @@ public class GuidedProjectilePoolManager : MonoBehaviour
                 return;
             }
 
-            m_pool = new ObjectPool(prefab, 8);
+            GameObject poolContainer = new GameObject(PoolContainerName + "_" + prefab.GetType());
+            poolContainer.transform.SetParent(this.transform);
+            m_pool = new ObjectPool(prefab, poolContainer.transform, 8);
         }
 
         public Component Get(Vector3 position, Quaternion rotation)
@@ -43,7 +45,6 @@ public class GuidedProjectilePoolManager : MonoBehaviour
             {
                 return;
             }
-            //guidedProjectile.gameObject.SetActive(false);
             m_pool.Release(guidedProjectile);
         }
     }

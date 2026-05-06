@@ -6,22 +6,7 @@ namespace Projectile
 {
 	public class GuidedProjectile : BaseProjectile
 	{
-		private GameObject m_target;/* 
-
-		public void OnTakenFromPool()
-		{
-			// Make sure the projectile doesn't keep stale state.
-			m_target = null;
-			m_isLaunched = false;
-		}
-
-		public void OnReturnedToPool()
-		{
-			m_target = null;
-			m_isLaunched = false;
-			m_speed = 0f;
-			m_damage = 0;
-		} */
+		private GameObject m_target;
 
 		public void Launch(GameObject target, float speed, int damage)
 		{
@@ -33,7 +18,7 @@ namespace Projectile
 		{
 			if (m_target == null)
 			{
-				GuidedProjectilePoolManager.instance?.Release(this);
+				PoolManager.instance?.Release(this);
 				return;
 			}
 
@@ -51,7 +36,7 @@ namespace Projectile
 			if (enemy != null && enemy.isAlive)
 			{
 				enemy.ApplyDamage(m_damage);
-				GuidedProjectilePoolManager.instance?.Release(this);
+				PoolManager.instance?.Release(this);
 			}
 		}
 	}

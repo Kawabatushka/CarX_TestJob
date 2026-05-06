@@ -8,12 +8,14 @@ namespace Pooling
         private int m_elementCount;
         private Component m_prefab;
         private Queue<Component> m_pool = new(DEFAULT_CAPACITY);
+        private Transform m_parentObject;
         private const int DEFAULT_CAPACITY = 16;
 
-        public ObjectPool(Component prefab, int capacity = DEFAULT_CAPACITY)
+        public ObjectPool(Component prefab, Transform parentObj = null, int capacity = DEFAULT_CAPACITY)
         {
             m_prefab = prefab;
             m_elementCount = capacity;
+            m_parentObject = parentObj;
             if (m_prefab == null)
             {
                 Debug.LogError("ObjectPool prefab is null");
@@ -32,7 +34,7 @@ namespace Pooling
         }
         private void CreateElement()
         {
-            var newElement = UnityEngine.Object.Instantiate(m_prefab);
+            var newElement = UnityEngine.Object.Instantiate(m_prefab, m_parentObject);
             newElement.gameObject.SetActive(false);
             m_pool.Enqueue(newElement);
         }
