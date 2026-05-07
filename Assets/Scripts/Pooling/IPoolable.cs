@@ -1,10 +1,8 @@
 namespace Pooling
 {
-    interface IPoolable1
-    {
-        /* // <- TO-DO1: доработать для стратегии
-        void SetPool(IObjectPool pool);
+	public interface IPoolable
+	{
 		void OnSpawned();
-		void OnDespawned(); */
-    }
+		void OnDespawned();
+	}
 }

@@ -11,6 +11,8 @@ namespace Tower
 		[SerializeField] protected int m_towerSettingsId = 0;
 		[Tooltip("Выбор пресета из GameConfig")]
 		[SerializeField] protected int m_projectileSettingsId = 0;
+		[Tooltip("Point of head of cannon")]
+		[SerializeField] protected Transform m_shootStartPoint;
 		protected SimpleEnemy m_currentTarget;
 		protected float m_lastShootTime = -1f;
 

@@ -4,7 +4,7 @@ namespace Pooling
 {
 	public interface IObjectPool
 	{
-		Component Get();
-		void Release(Component element);
+		GameObject Get();
+		void Release(GameObject element);
 	}
 }

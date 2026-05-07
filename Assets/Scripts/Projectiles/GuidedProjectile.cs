@@ -14,11 +14,17 @@ namespace Projectile
 			m_target = target;
 		}
 
+		public override void OnDespawned()
+		{
+			base.OnDespawned();
+			m_target = null;
+		}
+
 		protected override void Move()
 		{
 			if (m_target == null)
 			{
-				PoolManager.instance?.Release(this);
+				PoolManager.instance?.Release(gameObject);
 				return;
 			}
 
@@ -36,7 +42,7 @@ namespace Projectile
 			if (enemy != null && enemy.isAlive)
 			{
 				enemy.ApplyDamage(m_damage);
-				PoolManager.instance?.Release(this);
+				PoolManager.instance?.Release(gameObject);
 			}
 		}
 	}

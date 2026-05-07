@@ -30,7 +30,9 @@ namespace Tower
 				Debug.LogError("PoolManager = null");
 				return;
 			}
-			GuidedProjectile guidedProjectile = poolManager.Get(m_shootStartPoint.position, transform.rotation) as GuidedProjectile;
+			//GuidedProjectile guidedProjectile = poolManager.Get(m_shootStartPoint.position, transform.rotation) as GuidedProjectile;
+			GameObject projectileGameObject = poolManager.Get(GameConfig.instance.GetGuidedTowerSettings(m_towerSettingsId).projectilePrefab, m_shootStartPoint.position, transform.rotation);
+			GuidedProjectile guidedProjectile = projectileGameObject != null ? projectileGameObject.GetComponent<GuidedProjectile>() : null;
 
 			if (guidedProjectile != null && m_currentTarget != null)
 			{

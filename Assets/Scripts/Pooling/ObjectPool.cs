@@ -6,12 +6,12 @@ namespace Pooling
     public class ObjectPool : IObjectPool
     {
         private int m_elementCount;
-        private Component m_prefab;
-        private Queue<Component> m_pool = new(DEFAULT_CAPACITY);
+        private GameObject m_prefab;
+        private readonly Queue<GameObject> m_pool = new(DEFAULT_CAPACITY);
         private Transform m_parentObject;
         private const int DEFAULT_CAPACITY = 16;
 
-        public ObjectPool(Component prefab, Transform parentObj = null, int capacity = DEFAULT_CAPACITY)
+        public ObjectPool(GameObject prefab, Transform parentObj = null, int capacity = DEFAULT_CAPACITY)
         {
             m_prefab = prefab;
             m_elementCount = capacity;
@@ -34,25 +34,42 @@ namespace Pooling
         }
         private void CreateElement()
         {
-            var newElement = UnityEngine.Object.Instantiate(m_prefab, m_parentObject);
-            newElement.gameObject.SetActive(false);
-            m_pool.Enqueue(newElement);
+            var instance = UnityEngine.Object.Instantiate(m_prefab, m_parentObject);
+            instance.SetActive(false);
+
+            var pooledObject = instance.GetComponent<PooledObject>();
+            if (pooledObject == null)
+            {
+                pooledObject = instance.AddComponent<PooledObject>();
+            }
+            pooledObject.Initialize(m_prefab);
+
+            m_pool.Enqueue(instance);
         }
 
-        public Component Get()
+        public GameObject Get()
         {
             if(m_pool.Count==0)
             {
                 CreateElement();
             }
             var newElement = m_pool.Dequeue();
-            newElement.gameObject.SetActive(true);
+            newElement.SetActive(true);
+
+            if (newElement.TryGetComponent<IPoolable>(out var poolable))
+            {
+                poolable.OnSpawned();
+            }
             return newElement;
         }
 
-        public void Release(Component element)
+        public void Release(GameObject element)
         {
-            element.gameObject.SetActive(false);
+            if (element.TryGetComponent<IPoolable>(out var poolable))
+            {
+                poolable.OnDespawned();
+            }
+            element.SetActive(false);
             m_pool.Enqueue(element);
         }
     }

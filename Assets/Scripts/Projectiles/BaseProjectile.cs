@@ -1,18 +1,14 @@
-﻿using System;
-using Enemy;
+﻿using Enemy;
 using UnityEngine;
 using Pooling;
 
 namespace Projectile
 {
-	public abstract class BaseProjectile : MonoBehaviour
+	public abstract class BaseProjectile : MonoBehaviour, IPoolable
 	{
 		protected int m_damage;
 		protected float m_speed;
 		protected bool m_isLaunched = false;
-
-		/* // <- TO-DO1: доработать для стратегии
-		private IObjectPool m_pool; */
 
 		public virtual void Launch(float speed, int damage)
 		{
@@ -21,24 +17,19 @@ namespace Projectile
 			m_isLaunched = true;
 		}
 
-		/* // <- TO-DO1: доработать для стратегии
-		public void SetPool(IObjectPool pool)
-		{
-			m_pool = pool;
-		}
-
 		public virtual void OnSpawned()
 		{
+			// false потому, что снаряд просто заспавнился, но не начал движение
 			m_isLaunched = false;
 		}
 
-        public virtual void OnDespawned()
+		public virtual void OnDespawned()
 		{
 			m_isLaunched = false;
 			m_speed = 0f;
 			m_damage = 0;
-        } */
-		
+		}
+
 		protected abstract void Move();
 
 		protected virtual void Update()
@@ -55,7 +46,16 @@ namespace Projectile
 			if (enemy != null && enemy.isAlive)
 			{
 				enemy.ApplyDamage(m_damage);
-				Destroy(gameObject);
+
+				// If projectile came from pool - return it, otherwise destroy.
+				if (GetComponent<PooledObject>() != null)
+				{
+					PoolManager.instance?.Release(gameObject);
+				}
+				else
+				{
+					Destroy(gameObject);
+				}
 			}
 		}
 	}

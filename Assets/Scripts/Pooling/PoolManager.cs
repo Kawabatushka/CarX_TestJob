@@ -1,4 +1,4 @@
-using Projectile;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Pooling
@@ -6,10 +6,11 @@ namespace Pooling
     public class PoolManager : MonoBehaviour
     {
         public static PoolManager instance { get; private set; }
-        [SerializeField] private GuidedProjectile prefab;
         private const string PoolContainerName = "[Pool]";
 
-        private IObjectPool m_pool;
+        [SerializeField] private int poolsCapacity = 8;
+
+        private readonly Dictionary<GameObject, IObjectPool> m_pools = new();
 
         private void Awake()
         {
@@ -19,33 +20,54 @@ namespace Pooling
                 return;
             }
             instance = this;
+        }
 
+        public GameObject Get(GameObject prefab, Vector3 position, Quaternion rotation)
+        {
             if (prefab == null)
             {
-                // <- как тут правильно обработать NRE?
-                Debug.LogError($"Prefab is not initialized in ObjectPool", this);
-                return;
+                Debug.LogError("PoolManager.Get prefab is null", this);
+                return null;
             }
 
-            GameObject poolContainer = new GameObject(PoolContainerName + "_" + prefab.GetType());
-            poolContainer.transform.SetParent(this.transform);
-            m_pool = new ObjectPool(prefab, poolContainer.transform, 8);
+            if (!m_pools.TryGetValue(prefab, out var pool))
+            {
+                var container = new GameObject($"{PoolContainerName}_{prefab.name}");
+                container.transform.SetParent(this.transform);
+                pool = new ObjectPool(prefab, container.transform, poolsCapacity);
+                m_pools.Add(prefab, pool);
+            }
+
+            var instance = pool.Get();
+            instance.transform.SetPositionAndRotation(position, rotation);
+            return instance;
         }
 
-        public Component Get(Vector3 position, Quaternion rotation)
+        public void Release(GameObject instance)
         {
-            var guidedProjectile = m_pool.Get();
-            guidedProjectile.transform.SetPositionAndRotation(position, rotation);
-            return guidedProjectile;
-        }
-
-        public void Release(GuidedProjectile guidedProjectile)
-        {
-            if (guidedProjectile == null)
+            if (instance == null)
             {
                 return;
             }
-            m_pool.Release(guidedProjectile);
+
+            var pooledObject = instance.GetComponent<PooledObject>();
+            if (pooledObject == null || pooledObject.prefabKey == null)
+            {
+                // Not a pooled instance; do a safe fallback.
+                Destroy(instance);
+                return;
+            }
+
+            if (!m_pools.TryGetValue(pooledObject.prefabKey, out var pool))
+            {
+                // Pool missing (e.g., scene reload edge cases) — recreate and release.
+                var container = new GameObject($"{PoolContainerName}_{pooledObject.prefabKey.name}");
+                container.transform.SetParent(this.transform);
+                pool = new ObjectPool(pooledObject.prefabKey, container.transform, poolsCapacity);
+                m_pools.Add(pooledObject.prefabKey, pool);
+            }
+
+            pool.Release(instance);
         }
     }
 }

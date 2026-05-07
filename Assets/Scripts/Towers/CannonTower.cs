@@ -6,8 +6,6 @@ namespace Tower
 {
 	public class CannonTower : BaseTower
 	{
-		[Tooltip("Point of head of cannon")]
-		[SerializeField] private Transform m_shootStartPoint;
 		[SerializeField] protected Transform m_horizontalRotatingTowerPart;
 		[SerializeField] protected Transform m_verticalRotatingTowerPart;
 
