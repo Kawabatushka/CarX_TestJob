@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Projectile;
 using Enemy;
+using Pooling;
 
 namespace Tower
 {
@@ -44,10 +45,10 @@ namespace Tower
 		private bool IsReachedRotation(float maxAngleDifference)
 		{
 			Vector3 predictedVector = m_predictedPosition - m_shootStartPoint.position;
-			
+
 			bool isHorizontalRotReached = Mathf.Abs(m_horizontalRotatingTowerPart.forward.x - predictedVector.normalized.x) <= maxAngleDifference;
 			bool isVerticalRotReached = Mathf.Abs(m_verticalRotatingTowerPart.forward.y - predictedVector.normalized.y) <= maxAngleDifference;
-			
+
 			return isHorizontalRotReached && isVerticalRotReached;
 		}
 
@@ -105,9 +106,16 @@ namespace Tower
 
 			shootRotation = Quaternion.LookRotation(m_shootDirection);
 
-			var projectile = Instantiate(GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId).projectilePrefab, m_shootStartPoint.position, shootRotation);
-			//var projectile = GetElement(m_shootStartPoint.position, shootRotation);
-			var cannonProjectile = projectile.GetComponent<CannonProjectile>();
+			var poolManager = PoolManager.instance;
+			if (poolManager == null)
+			{
+				Debug.LogError("PoolManager = null");
+				return;
+			}
+			var prefab = GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId).projectilePrefab;
+			var projectileGameObject = poolManager.Get(prefab, m_shootStartPoint.position, shootRotation);
+			var cannonProjectile = projectileGameObject != null ? projectileGameObject?.GetComponent<CannonProjectile>() : null;
+
 			if (cannonProjectile != null)
 			{
 				cannonProjectile.Launch(GameConfig.instance.GetCannonProjectileSettings(m_projectileSettingsId).speed,

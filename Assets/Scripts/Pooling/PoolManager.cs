@@ -53,14 +53,12 @@ namespace Pooling
             var pooledObject = instance.GetComponent<PooledObject>();
             if (pooledObject == null || pooledObject.prefabKey == null)
             {
-                // Not a pooled instance; do a safe fallback.
                 Destroy(instance);
                 return;
             }
 
             if (!m_pools.TryGetValue(pooledObject.prefabKey, out var pool))
             {
-                // Pool missing (e.g., scene reload edge cases) — recreate and release.
                 var container = new GameObject($"{PoolContainerName}_{pooledObject.prefabKey.name}");
                 container.transform.SetParent(this.transform);
                 pool = new ObjectPool(pooledObject.prefabKey, container.transform, poolsCapacity);

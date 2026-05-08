@@ -49,7 +49,7 @@ namespace Pooling
 
         public GameObject Get()
         {
-            if(m_pool.Count==0)
+            if (m_pool.Count == 0)
             {
                 CreateElement();
             }
