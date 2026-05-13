@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
-using Projectile;
 using Enemy;
-using Pooling;
 
 namespace Tower
 {
@@ -9,8 +7,9 @@ namespace Tower
 	{
 		protected override void ConfigureStrategies()
 		{
-			m_rotationStrategy = new NullRotationStrategy();
 			m_aimingStrategy = new DirectAimingStrategy();
+			m_rotationStrategy = new NullRotationStrategy();
+			m_shootingStrategy = new GuidedShootingStrategy(m_towerSettingsId, m_projectileSettingsId);
 		}
 
 		protected override void FindTarget()
@@ -28,7 +27,7 @@ namespace Tower
 			return Time.time >= m_lastShootTime + GameConfig.instance.GetGuidedTowerSettings(m_towerSettingsId).shootInterval;
 		}
 
-		protected override void Shoot()
+		/*protected override void Shoot()
 		{
 			var poolManager = PoolManager.instance;
 			if (poolManager == null)
@@ -46,7 +45,7 @@ namespace Tower
 			}
 
 			m_lastShootTime = Time.time;
-		}
+		}*/
 
 		protected override float GetRangeToFindEnemy()
 		{

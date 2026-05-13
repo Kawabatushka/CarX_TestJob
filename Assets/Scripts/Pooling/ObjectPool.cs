@@ -7,11 +7,11 @@ namespace Pooling
     {
         private int m_elementCount;
         private GameObject m_prefab;
-        private readonly Queue<GameObject> m_pool = new(DEFAULT_CAPACITY);
+        private readonly Queue<GameObject> m_pool = new(DefaultCapacity);
         private Transform m_parentObject;
-        private const int DEFAULT_CAPACITY = 16;
+        private const int DefaultCapacity = 16;
 
-        public ObjectPool(GameObject prefab, Transform parentObj = null, int capacity = DEFAULT_CAPACITY)
+        public ObjectPool(GameObject prefab, Transform parentObj = null, int capacity = DefaultCapacity)
         {
             m_prefab = prefab;
             m_elementCount = capacity;
@@ -23,7 +23,7 @@ namespace Pooling
             }
             if (m_elementCount < 0)
             {
-                m_elementCount = DEFAULT_CAPACITY;
+                m_elementCount = DefaultCapacity;
                 Debug.LogError("ObjectPool capacity is less than 0. Capacity value set 16 as default.");
             }
 

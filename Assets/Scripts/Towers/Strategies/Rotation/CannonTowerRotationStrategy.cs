@@ -21,6 +21,11 @@ namespace Tower
 
         public void RotateTower(Vector3 predictedPosition)
         {
+            if (m_horizontalRotatingTowerPart == null || m_verticalRotatingTowerPart == null)
+            {
+                return;
+            }
+
             #region Горизонтальный поворот
             // Направление, куда надо повернуть пушку
             Vector3 horizontalDirectionToTarget = predictedPosition - m_horizontalRotatingTowerPart.position;

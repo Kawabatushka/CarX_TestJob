@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
-using Projectile;
 using Enemy;
-using Pooling;
 
 namespace Tower
 {
@@ -13,18 +11,15 @@ namespace Tower
 		[Tooltip("Max angles difference for a shot (in fractions)")]
 		[SerializeField] private float m_maxCannonAngleDifference = 0.1f;
 
-		private Quaternion shootRotation;
-		private Vector3 m_shootDirection;
-		private float m_timeToTarget;
-
 		protected override void ConfigureStrategies()
 		{
+			m_aimingStrategy = new CannonTowerAimingStrategy(m_projectileSettingsId);
 			m_rotationStrategy = new CannonTowerRotationStrategy(
 				m_horizontalRotatingTowerPart,
 				m_verticalRotatingTowerPart,
 				m_towerSettingsId
 			);
-			m_aimingStrategy = new CannonTowerAimingStrategy(m_projectileSettingsId);
+			m_shootingStrategy = new CannonShootingStrategy(m_towerSettingsId, m_projectileSettingsId);
 		}
 
 		protected override void FindTarget()
@@ -105,7 +100,7 @@ namespace Tower
 			#endregion
 		}*/
 
-		protected override void Shoot()
+		/*protected override void Shoot()
 		{
 			if (m_shootStartPoint == null)
 			{
@@ -136,7 +131,7 @@ namespace Tower
 			}
 
 			m_lastShootTime = Time.time;
-		}
+		}*/
 
 		/*private Vector3 CalculateShootDirection()
 		{

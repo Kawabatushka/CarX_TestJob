@@ -8,7 +8,7 @@ namespace Pooling
         public static PoolManager instance { get; private set; }
         private const string PoolContainerName = "[Pool]";
 
-        [SerializeField] private int poolsCapacity = 8;
+        [SerializeField] private int m_poolsCapacity = 8;
 
         private readonly Dictionary<GameObject, IObjectPool> m_pools = new();
 
@@ -34,7 +34,7 @@ namespace Pooling
             {
                 var container = new GameObject($"{PoolContainerName}_{prefab.name}");
                 container.transform.SetParent(this.transform);
-                pool = new ObjectPool(prefab, container.transform, poolsCapacity);
+                pool = new ObjectPool(prefab, container.transform, m_poolsCapacity);
                 m_pools.Add(prefab, pool);
             }
 
@@ -61,7 +61,7 @@ namespace Pooling
             {
                 var container = new GameObject($"{PoolContainerName}_{pooledObject.prefabKey.name}");
                 container.transform.SetParent(this.transform);
-                pool = new ObjectPool(pooledObject.prefabKey, container.transform, poolsCapacity);
+                pool = new ObjectPool(pooledObject.prefabKey, container.transform, m_poolsCapacity);
                 m_pools.Add(pooledObject.prefabKey, pool);
             }
 

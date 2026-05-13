@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using Enemy;
 using UnityEngine;
 
@@ -15,12 +14,14 @@ namespace Tower
 		[SerializeField] protected Transform m_shootStartPoint;
 		protected SimpleEnemy m_currentTarget;
 		protected Vector3 m_predictedPosition;
+		protected Vector3 m_shootDirection;
 		protected float m_lastShootTime = -1f;
 
 		private Coroutine m_targetSearchCoroutine;
 		private const float TargetSearchInterval = 0.1f;
-		protected IRotationStrategy m_rotationStrategy;
 		protected IAimingStrategy m_aimingStrategy;
+		protected IRotationStrategy m_rotationStrategy;
+		protected IShootingStrategy m_shootingStrategy;
 
 		protected abstract void ConfigureStrategies();
 
@@ -42,7 +43,8 @@ namespace Tower
 
 				if (CanShoot())
 				{
-					Shoot();
+					m_shootingStrategy?.Shoot(m_shootStartPoint,m_shootDirection,)
+					m_lastShootTime = Time.time;
 				}
 			}
 		}
@@ -67,7 +69,7 @@ namespace Tower
 
 		protected abstract void FindTarget();
 		protected abstract bool CanShoot();
-		protected abstract void Shoot();
+		//protected abstract void Shoot();
 		protected void OnDrawGizmosSelected()
 		{
 			Gizmos.color = UnityEngine.Color.green;
