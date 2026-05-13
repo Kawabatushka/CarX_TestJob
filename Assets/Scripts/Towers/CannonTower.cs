@@ -15,8 +15,17 @@ namespace Tower
 
 		private Quaternion shootRotation;
 		private Vector3 m_shootDirection;
-		private Vector3 m_predictedPosition;
-		private float timeToTarget;
+		private float m_timeToTarget;
+
+		protected override void ConfigureStrategies()
+		{
+			m_rotationStrategy = new CannonTowerRotationStrategy(
+				m_horizontalRotatingTowerPart,
+				m_verticalRotatingTowerPart,
+				m_towerSettingsId
+			);
+			m_aimingStrategy = new CannonTowerAimingStrategy(m_projectileSettingsId);
+		}
 
 		protected override void FindTarget()
 		{
@@ -52,7 +61,7 @@ namespace Tower
 			return isHorizontalRotReached && isVerticalRotReached;
 		}
 
-		protected override void RotateTower()
+		/*protected override void RotateTower()
 		{
 			#region Горизонтальный поворот
 			// Направление, куда надо повернуть пушку
@@ -94,7 +103,7 @@ namespace Tower
 				);
 			}
 			#endregion
-		}
+		}*/
 
 		protected override void Shoot()
 		{
@@ -129,7 +138,7 @@ namespace Tower
 			m_lastShootTime = Time.time;
 		}
 
-		private Vector3 CalculateShootDirection()
+		/*private Vector3 CalculateShootDirection()
 		{
 			Vector3 toTarget = m_currentTarget.transform.position - m_shootStartPoint.position;
 			if (m_currentTarget.velocity.magnitude < 0.1f)
@@ -154,17 +163,17 @@ namespace Tower
 			float time1 = (-b + Mathf.Sqrt(discriminant)) / (2f * a);
 			float time2 = (-b - Mathf.Sqrt(discriminant)) / (2f * a);
 
-			timeToTarget = Mathf.Max(time1, time2);
+			m_timeToTarget = Mathf.Max(time1, time2);
 			#endregion
 
-			if (timeToTarget < 0)
+			if (m_timeToTarget < 0)
 			{
 				return toTarget.normalized;
 			}
 
-			m_predictedPosition = m_currentTarget.transform.position + m_currentTarget.velocity * timeToTarget;
+			m_predictedPosition = m_currentTarget.transform.position + m_currentTarget.velocity * m_timeToTarget;
 			return (m_predictedPosition - m_shootStartPoint.position).normalized;
-		}
+		}*/
 
 		protected override float GetRangeToFindEnemy()
 		{

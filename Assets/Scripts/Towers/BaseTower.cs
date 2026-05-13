@@ -14,12 +14,20 @@ namespace Tower
 		[Tooltip("Point of head of cannon")]
 		[SerializeField] protected Transform m_shootStartPoint;
 		protected SimpleEnemy m_currentTarget;
+		protected Vector3 m_predictedPosition;
 		protected float m_lastShootTime = -1f;
 
 		private Coroutine m_targetSearchCoroutine;
 		private const float TargetSearchInterval = 0.1f;
+		protected IRotationStrategy m_rotationStrategy;
+		protected IAimingStrategy m_aimingStrategy;
 
+		protected abstract void ConfigureStrategies();
 
+		protected virtual void Awake()
+		{
+			ConfigureStrategies();
+		}
 
 		protected void Start()
 		{
@@ -30,7 +38,7 @@ namespace Tower
 		{
 			if (m_currentTarget != null && m_currentTarget.isAlive)
 			{
-				RotateTower();
+				m_rotationStrategy?.RotateTower(m_predictedPosition);
 
 				if (CanShoot())
 				{
@@ -57,7 +65,6 @@ namespace Tower
 			}
 		}
 
-		protected virtual void RotateTower() { }
 		protected abstract void FindTarget();
 		protected abstract bool CanShoot();
 		protected abstract void Shoot();
