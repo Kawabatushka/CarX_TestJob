@@ -19,6 +19,7 @@ namespace Tower
 
 		private Coroutine m_targetSearchCoroutine;
 		private const float TargetSearchInterval = 0.1f;
+
 		protected IAimingStrategy m_aimingStrategy;
 		protected IRotationStrategy m_rotationStrategy;
 		protected IShootingStrategy m_shootingStrategy;
@@ -43,7 +44,7 @@ namespace Tower
 
 				if (CanShoot())
 				{
-					m_shootingStrategy?.Shoot(m_shootStartPoint,m_shootDirection,)
+					m_shootingStrategy?.Shoot(m_shootStartPoint, m_shootDirection, m_currentTarget, transform.rotation);
 					m_lastShootTime = Time.time;
 				}
 			}
