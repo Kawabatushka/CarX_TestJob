@@ -16,27 +16,14 @@ namespace Tower
 		protected SimpleEnemy m_currentTarget;
 		protected float m_lastShootTime = -1f;
 
-		private IRotatable m_rotationStrategy;
-
 		private Coroutine m_targetSearchCoroutine;
 		private const float TargetSearchInterval = 0.1f;
 
-		protected void Awake()
-		{
-			InitializeDependencies();
-		}
 
-		protected abstract void InitializeDependencies();
 
 		protected void Start()
 		{
 			m_targetSearchCoroutine = StartCoroutine(TargetSearchRoutine());
-		}
-
-		public BaseTower SetRotationStrategy(IRotatable rotationStrategy) // под каждую стратегию свой сеттер
-		{
-			m_rotationStrategy = rotationStrategy;
-			return this;
 		}
 
 		protected void Update()
@@ -70,16 +57,16 @@ namespace Tower
 			}
 		}
 
-		protected void RotateTower() => m_rotationStrategy?.RotateTower();
+		protected virtual void RotateTower() { }
 		protected abstract void FindTarget();
 		protected abstract bool CanShoot();
 		protected abstract void Shoot();
-		protected abstract float GetRangeToFindEnemy();
-
 		protected void OnDrawGizmosSelected()
 		{
 			Gizmos.color = UnityEngine.Color.green;
 			Gizmos.DrawWireSphere(transform.position, GetRangeToFindEnemy());
 		}
+
+		protected abstract float GetRangeToFindEnemy();
 	}
 }

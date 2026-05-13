@@ -7,11 +7,6 @@ namespace Tower
 {
 	public class GuidedTower : BaseTower
 	{
-		protected override void InitializeDependencies()
-		{
-			new GuidedTowerDependenciesFactory().ApplyDependencies(this);
-		}
-
 		protected override void FindTarget()
 		{
 			m_currentTarget = EnemyManager.instance.GetClosestEnemy(transform.position, GameConfig.instance.GetGuidedTowerSettings(m_towerSettingsId).rangeToFindEnemy);
