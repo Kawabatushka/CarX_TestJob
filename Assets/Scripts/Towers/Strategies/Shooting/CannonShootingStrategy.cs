@@ -16,7 +16,7 @@ namespace Tower
             m_projectileSettingsId = projectileSettingsId;
         }
 
-        public void Shoot(Transform shootStartPoint, Vector3 shootDirection, SimpleEnemy currentTarget/* , Quaternion towerRotation = default */)
+        public void Shoot(Transform shootStartPoint, Vector3 shootDirection, SimpleEnemy currentTarget)
         {
             if (shootStartPoint == null)
             {
@@ -36,8 +36,6 @@ namespace Tower
                 return;
             }
 
-            //Vector3 aimDirectionNormalized = aimDirection.sqrMagnitude > 0 ? aimDirection.normalized : Vector3.forward;
-            //Quaternion shootRotation = Quaternion.LookRotation(aimDirectionNormalized);
             Quaternion shootRotation = Quaternion.LookRotation(shootDirection);
 
             var projectileGameObject = poolManager.Get(prefab, shootStartPoint.position, shootRotation);
@@ -52,8 +50,6 @@ namespace Tower
             {
                 Debug.LogError($"Cannon Projectile Component = null\n{nameof(CannonShootingStrategy)}");
             }
-
-            //m_lastShootTime = Time.time; // TO-DO-R: не забыть обновлять
         }
     }
 }

@@ -91,10 +91,6 @@ namespace Tower
 				StopCoroutine(m_targetSearchCoroutine);
 			}
 		}
-
-		//protected abstract void FindTarget();
-		//protected abstract bool CanShoot();
-		//protected abstract void Shoot();
 		protected void OnDrawGizmosSelected()
 		{
 			Gizmos.color = UnityEngine.Color.green;
