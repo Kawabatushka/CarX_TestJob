@@ -16,7 +16,9 @@ namespace Tower
             m_projectileSettingsId = projectileSettingsId;
         }
 
-        public void Shoot(Transform shootStartPoint, Vector3 shootDirection, SimpleEnemy currentTarget, Quaternion towerRotation = default)
+        // TO-DO-R: вместо towerRotation юзать shootDirection, просто перевести его в Quaternion
+        // тогда будет -1 параметр и + гибкость для стратегий стрельбы
+        public void Shoot(Transform shootStartPoint, Vector3 shootDirection, SimpleEnemy currentTarget/* , Quaternion towerRotation = default */)
         {
             if (shootStartPoint == null)
             {
@@ -36,11 +38,12 @@ namespace Tower
                 return;
             }
 
-            var projectileGameObject = poolManager.Get(prefab, shootStartPoint.position, towerRotation);
+            var projectileGameObject = poolManager.Get(prefab, shootStartPoint.position, Quaternion.Euler(shootDirection));
             GuidedProjectile guidedProjectile = projectileGameObject != null ? projectileGameObject.GetComponent<GuidedProjectile>() : null;
 
             if (guidedProjectile != null && currentTarget != null)
             {
+                var projectileSettings = GameConfig.instance.GetCannonProjectileSettings(m_projectileSettingsId);
                 guidedProjectile.Launch(currentTarget.gameObject, GameConfig.instance.GetGuidedProjectileSettings(m_projectileSettingsId).speed, GameConfig.instance.GetGuidedProjectileSettings(m_projectileSettingsId).damage);
             }
 

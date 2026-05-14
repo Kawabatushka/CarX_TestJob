@@ -11,8 +11,8 @@
 - добавил поворот башни и стрельбу на упреждение с ожиданием завершения поворота
 
 Надо сделать:
-- ICanShootingStrategy для обеих башен
 - ITargetingStrategy для обеих башен
+- у CannonShootingStrategy.Shoot() и GuidedShootingStrategy.Shoot() отличия минимальны; подумать, как переписать Shoot()
 - че-то сделать с GetRangeToFindEnemy
 
 <img width="1847" height="963" alt="image" src="https://github.com/user-attachments/assets/bfbecb05-92c1-43cf-8f11-e40bf3fb29ac" />

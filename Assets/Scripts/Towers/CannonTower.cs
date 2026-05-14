@@ -5,20 +5,11 @@ namespace Tower
 {
 	public class CannonTower : BaseTower
 	{
-		[SerializeField] protected Transform m_horizontalRotatingTowerPart;
-		[SerializeField] protected Transform m_verticalRotatingTowerPart;
-
-		[Tooltip("Max angles difference for a shot (in fractions)")]
-		[SerializeField] private float m_maxCannonAngleDifference = 0.1f;
-
 		protected override void ConfigureStrategies()
 		{
 			m_aimingStrategy = new CannonTowerAimingStrategy(m_projectileSettingsId);
-			m_rotationStrategy = new CannonTowerRotationStrategy(
-				m_horizontalRotatingTowerPart,
-				m_verticalRotatingTowerPart,
-				m_towerSettingsId
-			);
+			m_rotationStrategy = new CannonTowerRotationStrategy(m_towerSettingsId);
+			m_shootingConditionStrategy = new CannonTowerShootingConditionStrategy(m_towerSettingsId);
 			m_shootingStrategy = new CannonShootingStrategy(m_towerSettingsId, m_projectileSettingsId);
 		}
 
@@ -27,7 +18,7 @@ namespace Tower
 			m_currentTarget = EnemyManager.instance.GetClosestEnemy(transform.position, GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId).rangeToFindEnemy);
 		}
 
-		protected override bool CanShoot()
+		/* protected override bool CanShoot()
 		{
 			if (GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId)?.projectilePrefab == null)
 			{
@@ -35,9 +26,9 @@ namespace Tower
 				return false;
 			}
 
-			m_shootDirection = CalculateShootDirection();
+			//m_shootDirection = CalculateShootDirection();
 
-			if (IsReachedRotation(m_maxCannonAngleDifference))
+			if (IsReachedRotation(m_maxCannonAngleDifferenceForShooting))
 			{
 				return Time.time >= m_lastShootTime + GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId).shootInterval;
 			}
@@ -45,8 +36,8 @@ namespace Tower
 			{
 				return false;
 			}
-		}
-		private bool IsReachedRotation(float maxAngleDifference)
+		} */
+		/* private bool IsReachedRotation(float maxAngleDifference)
 		{
 			Vector3 predictedVector = m_predictedPosition - m_shootStartPoint.position;
 
@@ -54,7 +45,7 @@ namespace Tower
 			bool isVerticalRotReached = Mathf.Abs(m_verticalRotatingTowerPart.forward.y - predictedVector.normalized.y) <= maxAngleDifference;
 
 			return isHorizontalRotReached && isVerticalRotReached;
-		}
+		} */
 
 		/*protected override void RotateTower()
 		{

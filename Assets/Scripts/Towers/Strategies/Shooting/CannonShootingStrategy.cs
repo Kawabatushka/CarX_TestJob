@@ -16,7 +16,7 @@ namespace Tower
             m_projectileSettingsId = projectileSettingsId;
         }
 
-        public void Shoot(Transform shootStartPoint, Vector3 shootDirection, SimpleEnemy currentTarget, Quaternion towerRotation = default)
+        public void Shoot(Transform shootStartPoint, Vector3 shootDirection, SimpleEnemy currentTarget/* , Quaternion towerRotation = default */)
         {
             if (shootStartPoint == null)
             {

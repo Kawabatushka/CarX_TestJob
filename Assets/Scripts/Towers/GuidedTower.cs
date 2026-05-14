@@ -9,6 +9,7 @@ namespace Tower
 		{
 			m_aimingStrategy = new DirectAimingStrategy();
 			m_rotationStrategy = new NullRotationStrategy();
+			m_shootingConditionStrategy = new GuidedTowerShootingConditionStrategy(m_towerSettingsId);
 			m_shootingStrategy = new GuidedShootingStrategy(m_towerSettingsId, m_projectileSettingsId);
 		}
 
@@ -17,7 +18,7 @@ namespace Tower
 			m_currentTarget = EnemyManager.instance.GetClosestEnemy(transform.position, GameConfig.instance.GetGuidedTowerSettings(m_towerSettingsId).rangeToFindEnemy);
 		}
 
-		protected override bool CanShoot()
+		/* protected override bool CanShoot()
 		{
 			if (GameConfig.instance.GetGuidedTowerSettings(m_towerSettingsId)?.projectilePrefab == null)
 			{
@@ -25,7 +26,7 @@ namespace Tower
 				return false;
 			}
 			return Time.time >= m_lastShootTime + GameConfig.instance.GetGuidedTowerSettings(m_towerSettingsId).shootInterval;
-		}
+		} */
 
 		/*protected override void Shoot()
 		{

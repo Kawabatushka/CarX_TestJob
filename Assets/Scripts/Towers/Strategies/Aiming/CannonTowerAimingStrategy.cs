@@ -12,12 +12,12 @@ namespace Tower
             m_projectileSettingsId = projectileSettingsId;
         }
 
-        public void CalculateAim(SimpleEnemy target, Transform shootStartPoint, out Vector3 predictedPosition, out Vector3 aimDirection)
+        public void CalculateAim(SimpleEnemy target, Transform shootStartPoint, out Vector3 predictedPosition, out Vector3 shootDirection)
         {
             if (target == null || shootStartPoint == null)
             {
                 predictedPosition = Vector3.zero;
-                aimDirection = Vector3.zero;
+                shootDirection = Vector3.zero;
                 return;
             }
 
@@ -25,7 +25,7 @@ namespace Tower
             if (target.velocity.magnitude < 0.1f)
             {
                 predictedPosition = target.transform.position;
-                aimDirection = toTarget.sqrMagnitude > 0 ? toTarget.normalized : Vector3.forward;
+                shootDirection = toTarget.sqrMagnitude > 0 ? toTarget.normalized : Vector3.forward;
                 return;
             }
 
@@ -41,7 +41,7 @@ namespace Tower
             {
                 // Нет решения - цель слишком быстрая, стреляем прямо
                 predictedPosition = target.transform.position;
-                aimDirection = toTarget.sqrMagnitude > 0 ? toTarget.normalized : Vector3.forward;
+                shootDirection = toTarget.sqrMagnitude > 0 ? toTarget.normalized : Vector3.forward;
                 return;
             }
 
@@ -54,12 +54,12 @@ namespace Tower
             if (timeToTarget < 0)
             {
                 predictedPosition = target.transform.position;
-                aimDirection = toTarget.sqrMagnitude > 0 ? toTarget.normalized : Vector3.forward;
+                shootDirection = toTarget.sqrMagnitude > 0 ? toTarget.normalized : Vector3.forward;
                 return;
             }
 
             predictedPosition = target.transform.position + target.velocity * timeToTarget;
-            aimDirection = (predictedPosition - shootStartPoint.position).normalized;
+            shootDirection = (predictedPosition - shootStartPoint.position).normalized;
         }
     }
 }
