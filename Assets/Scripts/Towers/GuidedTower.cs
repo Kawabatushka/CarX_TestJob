@@ -7,16 +7,17 @@ namespace Tower
 	{
 		protected override void ConfigureStrategies()
 		{
+			m_targetFindingStrategy = new GetClosestTargetStrategy();
 			m_aimingStrategy = new DirectAimingStrategy();
 			m_rotationStrategy = new NullRotationStrategy();
 			m_shootingConditionStrategy = new GuidedTowerShootingConditionStrategy(m_towerSettingsId);
 			m_shootingStrategy = new GuidedShootingStrategy(m_towerSettingsId, m_projectileSettingsId);
 		}
 
-		protected override void FindTarget()
+		/* protected override void FindTarget()
 		{
 			m_currentTarget = EnemyManager.instance.GetClosestEnemy(transform.position, GameConfig.instance.GetGuidedTowerSettings(m_towerSettingsId).rangeToFindEnemy);
-		}
+		} */
 
 		/* protected override bool CanShoot()
 		{

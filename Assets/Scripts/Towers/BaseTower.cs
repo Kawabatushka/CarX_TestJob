@@ -24,6 +24,7 @@ namespace Tower
 		private Coroutine m_targetSearchCoroutine;
 		private const float TargetSearchInterval = 0.1f;
 
+		protected ITargetFindingStrategy m_targetFindingStrategy;
 		protected IAimingStrategy m_aimingStrategy;
 		protected IRotationStrategy m_rotationStrategy;
 		protected IShootingConditionStrategy m_shootingConditionStrategy;
@@ -70,7 +71,14 @@ namespace Tower
 		{
 			while (true)
 			{
-				FindTarget();
+				if (m_targetFindingStrategy != null)
+				{
+					m_currentTarget = m_targetFindingStrategy.GetTarget(transform.position, GetRangeToFindEnemy());
+				}
+				else
+				{
+					m_currentTarget = null;
+				}
 				yield return new WaitForSeconds(TargetSearchInterval);
 			}
 		}
@@ -84,7 +92,7 @@ namespace Tower
 			}
 		}
 
-		protected abstract void FindTarget();
+		//protected abstract void FindTarget();
 		//protected abstract bool CanShoot();
 		//protected abstract void Shoot();
 		protected void OnDrawGizmosSelected()
