@@ -23,18 +23,6 @@ namespace Tower
                 Debug.LogError($"CannonShootingStrategy.Shoot shootStartPoint is null\n{nameof(CannonShootingStrategy)}");
                 return;
             }
-            /* var poolManager = PoolManager.instance;
-            if (poolManager == null)
-            {
-                Debug.LogError("CannonShootingStrategy.Shoot poolManager is null");
-                return;
-            } */
-            /* var prefab = GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId).projectilePrefab;
-            if (prefab == null)
-            {
-                Debug.LogError($"Cannon Projectile Prefab = null\n{nameof(CannonShootingStrategy)}");
-                return;
-            } */
 
             Quaternion shootRotation = Quaternion.LookRotation(shootDirection);
 

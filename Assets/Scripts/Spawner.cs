@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Pooling;
+using UnityEngine;
 
 namespace Enemy
 {
@@ -33,17 +34,16 @@ namespace Enemy
 				Debug.LogError("Spawner.SpawnEnemy m_moveTarget is null");
 				return;
 			}
-			/* if (GameConfig.instance?.enemySpawnSettings?.enemyPrefab == null)
-			{
-				Debug.LogError("Enemy Prefab не задан");
-				return;
-			} */
 
-			var newEnemy = Instantiate(GameConfig.instance.enemySpawnSettings.enemyPrefab);
-			newEnemy.transform.position = this.transform.position;
+			var newEnemy = PoolManager.instance.Get(GameConfig.instance.enemySpawnSettings.enemyPrefab, false);
 			newEnemy.TryGetComponent(out SimpleEnemy enemyComponent);
-			enemyComponent.SetMoveTarget(m_moveTarget);
-			EnemyManager.instance.RegisterEnemy(enemyComponent);
+			if (enemyComponent != null)
+			{
+				newEnemy.transform.position = this.transform.position;
+				newEnemy.SetActive(true);
+				enemyComponent.SetMoveTarget(m_moveTarget);
+				EnemyManager.instance.RegisterEnemy(enemyComponent);
+			}
 		}
 	}
 }

@@ -13,7 +13,6 @@
 Надо сделать:
 - добавить таймер жизни объектов пула (именно для пуль, +-15сек); надо не затронуть пулы других объектов
 - добавить maxCapacity для пулов (+-64)
-- объекты пула сначала надо переместить куда надо, а потом уже активировать http://hfsmsk.carx-tech.ru/QA_Data/DR2/Unity_HTItz4uLQq.png
 - у CannonShootingStrategy.Shoot() и GuidedShootingStrategy.Shoot() отличия минимальны; подумать, как переписать Shoot()
 
 <img width="1847" height="963" alt="image" src="https://github.com/user-attachments/assets/bfbecb05-92c1-43cf-8f11-e40bf3fb29ac" />

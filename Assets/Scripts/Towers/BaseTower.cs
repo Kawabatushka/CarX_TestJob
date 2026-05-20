@@ -74,17 +74,6 @@ namespace Tower
 			{
 				m_currentTarget = m_targetFindingStrategy?.GetTarget(transform.position, GetRangeToFindEnemy()) ?? null;
 				yield return coolDown;
-				/* if (m_targetFindingStrategy != null)
-				{
-					m_currentTarget = m_targetFindingStrategy.GetTarget(transform.position, GetRangeToFindEnemy());
-				Debug.LogError($"m_currentTarget {m_currentTarget}", this);
-				}
-				else
-				{
-					m_currentTarget = null;
-				}
-				Debug.LogError($"BaseTower.TargetSearchRoutine m_currentTarget= {m_currentTarget}", this);
-				yield return new WaitForSeconds(TargetSearchInterval); */
 			}
 		}
 

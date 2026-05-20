@@ -20,12 +20,6 @@ namespace Tower
             Transform verticalRotatingTowerPart = null
             )
         {
-            /* if (GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId)?.projectilePrefab == null)
-            {
-                Debug.LogError($"Cannon Projectile Prefab  = null\n{nameof(CannonTowerShootingConditionStrategy)}");
-                return false;
-            } */
-
             Vector3 predictedVector = predictedPos - shootStartPointPos;
 
             bool isHorizontalRotReached = Mathf.Abs(horizontalRotatingTowerPart.forward.x - predictedVector.normalized.x) <= maxCannonAngleDifference;

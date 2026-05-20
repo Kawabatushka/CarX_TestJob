@@ -20,11 +20,6 @@ namespace Tower
             Transform verticalRotatingTowerPart = null
             )
         {
-            /* if (GameConfig.instance.GetGuidedTowerSettings(m_towerSettingsId)?.projectilePrefab == null)
-            {
-                Debug.LogError($"Guided Projectile Prefab = null\n{nameof(GuidedTowerShootingConditionStrategy)}");
-                return false;
-            } */
             return Time.time >= lastShootTime + GameConfig.instance.GetGuidedTowerSettings(m_towerSettingsId).shootInterval;
         }
     }

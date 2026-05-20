@@ -23,18 +23,6 @@ namespace Tower
                 Debug.LogError($"GuidedShootingStrategy.Shoot shootStartPoint = null\n{nameof(CannonShootingStrategy)}");
                 return;
             }
-            /* var poolManager = PoolManager.instance;
-            if (poolManager == null)
-            {
-                Debug.LogError("GuidedShootingStrategy.Shoot poolManager is null");
-                return;
-            } */
-            /* var prefab = GameConfig.instance.GetGuidedTowerSettings(m_towerSettingsId).projectilePrefab;
-            if (prefab == null)
-            {
-                Debug.LogError($"Cannon Projectile Prefab = null\n{nameof(CannonShootingStrategy)}");
-                return;
-            } */
 
             var projectileGameObject = PoolManager.instance.Get(
                 GameConfig.instance.GetGuidedTowerSettings(m_towerSettingsId).projectilePrefab,

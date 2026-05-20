@@ -22,7 +22,7 @@ namespace Projectile
 
 		protected override void Move()
 		{
-			if (m_target == null)
+			if (!m_target.activeSelf)
 			{
 				PoolManager.instance?.Release(gameObject);
 				return;

@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
+using Pooling;
 
 namespace Enemy
 {
-	public class SimpleEnemy : MonoBehaviour
+	public class SimpleEnemy : MonoBehaviour, IPoolable
 	{
 		[System.Serializable] public class EnemyEvent : UnityEvent<SimpleEnemy> { }
 		public EnemyEvent OnDied = new EnemyEvent();
@@ -19,9 +20,15 @@ namespace Enemy
 		public bool hasReachedTarget => Vector3.Distance(transform.position, moveTargetPosition) <= ReachDistance;
 		public bool isAlive => m_isAlive;
 
-		private void Start()
+		public void OnSpawned()
 		{
+			m_isAlive = true;
 			m_currentHP = GameConfig.instance.enemyData.maxHP;
+		}
+
+		public void OnDespawned()
+		{
+			m_moveTarget = null;
 		}
 
 		private void Update()
@@ -52,7 +59,7 @@ namespace Enemy
 			m_isAlive = false;
 			m_currentHP = 0;
 			OnDied?.Invoke(this);
-			Destroy(gameObject);
+			PoolManager.instance?.Release(gameObject);
 		}
 
 		private void MoveTowardsTarget()
