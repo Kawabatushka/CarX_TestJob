@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 
 namespace Enemy
@@ -43,12 +42,13 @@ namespace Enemy
 
 		private void HandleTargetReached()
 		{
-			Debug.Log($"Враг дошел до цели и был уничтожен", this);
+			Debug.Log($"Enemy reached the target and was destroyed", this);
 			Die();
 		}
 
 		private void Die()
 		{
+			// "ой фу" - Максим
 			m_isAlive = false;
 			m_currentHP = 0;
 			OnDied?.Invoke(this);

@@ -1,5 +1,4 @@
-﻿using Enemy;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Enemy
 {
@@ -31,14 +30,14 @@ namespace Enemy
 		{
 			if (m_moveTarget == null)
 			{
-				Debug.LogError("Move Target не задан");
+				Debug.LogError("Spawner.SpawnEnemy m_moveTarget is null");
 				return;
 			}
-			if (GameConfig.instance?.enemySpawnSettings?.enemyPrefab == null)
+			/* if (GameConfig.instance?.enemySpawnSettings?.enemyPrefab == null)
 			{
 				Debug.LogError("Enemy Prefab не задан");
 				return;
-			}
+			} */
 
 			var newEnemy = Instantiate(GameConfig.instance.enemySpawnSettings.enemyPrefab);
 			newEnemy.transform.position = this.transform.position;

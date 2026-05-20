@@ -47,7 +47,6 @@ namespace Projectile
 			{
 				enemy.ApplyDamage(m_damage);
 
-				// If projectile came from pool - return it, otherwise destroy.
 				if (GetComponent<PooledObject>() != null)
 				{
 					PoolManager.instance?.Release(gameObject);

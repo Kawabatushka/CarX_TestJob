@@ -22,7 +22,7 @@ namespace Pooling
             instance = this;
         }
 
-        public GameObject Get(GameObject prefab, Vector3 position = default, Quaternion rotation = default)
+        public GameObject Get(GameObject prefab, bool isActiveInstance = true, Vector3 position = default, Quaternion rotation = default)
         {
             if (prefab == null)
             {
@@ -38,11 +38,12 @@ namespace Pooling
                 m_pools.Add(prefab, pool);
             }
 
-            var instance = pool.Get();
+            var instance = pool.Get(false);
             if (position != default && rotation != default)
             {
                 instance.transform.SetPositionAndRotation(position, rotation);
             }
+            instance.SetActive(isActiveInstance);
             return instance;
         }
 

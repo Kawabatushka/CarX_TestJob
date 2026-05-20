@@ -20,24 +20,29 @@ namespace Tower
         {
             if (shootStartPoint == null)
             {
-                Debug.LogError($"Shoot Point = null\n{nameof(CannonShootingStrategy)}");
+                Debug.LogError($"GuidedShootingStrategy.Shoot shootStartPoint = null\n{nameof(CannonShootingStrategy)}");
                 return;
             }
-            var poolManager = PoolManager.instance;
+            /* var poolManager = PoolManager.instance;
             if (poolManager == null)
             {
-                Debug.LogError("PoolManager = null");
+                Debug.LogError("GuidedShootingStrategy.Shoot poolManager is null");
                 return;
-            }
-            var prefab = GameConfig.instance.GetGuidedTowerSettings(m_towerSettingsId).projectilePrefab;
+            } */
+            /* var prefab = GameConfig.instance.GetGuidedTowerSettings(m_towerSettingsId).projectilePrefab;
             if (prefab == null)
             {
                 Debug.LogError($"Cannon Projectile Prefab = null\n{nameof(CannonShootingStrategy)}");
                 return;
-            }
+            } */
 
-            var projectileGameObject = poolManager.Get(prefab, shootStartPoint.position, Quaternion.Euler(shootDirection));
-            GuidedProjectile guidedProjectile = projectileGameObject != null ? projectileGameObject.GetComponent<GuidedProjectile>() : null;
+            var projectileGameObject = PoolManager.instance.Get(
+                GameConfig.instance.GetGuidedTowerSettings(m_towerSettingsId).projectilePrefab,
+                true,
+                shootStartPoint.position,
+                Quaternion.Euler(shootDirection));
+            // TO-DO-R: удалить cannonProjectile, юзать projectileGameObject
+            var guidedProjectile = projectileGameObject?.GetComponent<GuidedProjectile>() ?? null;
 
             if (guidedProjectile != null && currentTarget != null)
             {

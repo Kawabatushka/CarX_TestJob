@@ -47,14 +47,14 @@ namespace Pooling
             m_pool.Enqueue(instance);
         }
 
-        public GameObject Get()
+        public GameObject Get(bool isActiveInstance = true)
         {
             if (m_pool.Count == 0)
             {
                 CreateElement();
             }
             var newElement = m_pool.Dequeue();
-            newElement.SetActive(true);
+            newElement.SetActive(isActiveInstance);
 
             if (newElement.TryGetComponent<IPoolable>(out var poolable))
             {

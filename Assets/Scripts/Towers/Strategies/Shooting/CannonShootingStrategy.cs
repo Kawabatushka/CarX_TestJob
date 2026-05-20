@@ -20,26 +20,31 @@ namespace Tower
         {
             if (shootStartPoint == null)
             {
-                Debug.LogError($"Shoot Point = null\n{nameof(CannonShootingStrategy)}");
+                Debug.LogError($"CannonShootingStrategy.Shoot shootStartPoint is null\n{nameof(CannonShootingStrategy)}");
                 return;
             }
-            var poolManager = PoolManager.instance;
+            /* var poolManager = PoolManager.instance;
             if (poolManager == null)
             {
-                Debug.LogError("Pool Manager = null");
+                Debug.LogError("CannonShootingStrategy.Shoot poolManager is null");
                 return;
-            }
-            var prefab = GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId).projectilePrefab;
+            } */
+            /* var prefab = GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId).projectilePrefab;
             if (prefab == null)
             {
                 Debug.LogError($"Cannon Projectile Prefab = null\n{nameof(CannonShootingStrategy)}");
                 return;
-            }
+            } */
 
             Quaternion shootRotation = Quaternion.LookRotation(shootDirection);
 
-            var projectileGameObject = poolManager.Get(prefab, shootStartPoint.position, shootRotation);
-            var cannonProjectile = projectileGameObject != null ? projectileGameObject?.GetComponent<CannonProjectile>() : null;
+            var projectileGameObject = PoolManager.instance.Get(
+                GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId).projectilePrefab,
+                true,
+                shootStartPoint.position,
+                shootRotation);
+            // TO-DO-R: удалить cannonProjectile, юзать projectileGameObject
+            var cannonProjectile = projectileGameObject?.GetComponent<CannonProjectile>() ?? null;
 
             if (cannonProjectile != null)
             {
@@ -48,7 +53,7 @@ namespace Tower
             }
             else
             {
-                Debug.LogError($"Cannon Projectile Component = null\n{nameof(CannonShootingStrategy)}");
+                Debug.LogError($"CannonShootingStrategy.Shoot cannonProjectile is null\n{nameof(CannonShootingStrategy)}");
             }
         }
     }
