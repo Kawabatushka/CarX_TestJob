@@ -1,15 +1,16 @@
 using Enemy;
 using UnityEngine;
+using Tools;
 
 namespace Tower
 {
-    public class CannonTowerAimingStrategy : IAimingStrategy
+    public class PredictedAimingStrategy : IAimingStrategy
     {
-        private readonly int m_projectileSettingsId;
+        private readonly float m_projectileSpeed;
 
-        public CannonTowerAimingStrategy(int projectileSettingsId)
+        public PredictedAimingStrategy(TowerData towerData)
         {
-            m_projectileSettingsId = projectileSettingsId;
+            m_projectileSpeed = towerData.projectileSpeed;
         }
 
         public void CalculateAim(SimpleEnemy target, Transform shootStartPoint, out Vector3 predictedPosition, out Vector3 shootDirection)
@@ -31,7 +32,7 @@ namespace Tower
 
             #region Решение квадратного уравнения для точного расчета
             float a = Vector3.Dot(target.velocity, target.velocity) -
-                Mathf.Pow(GameConfig.instance.GetCannonProjectileSettings(m_projectileSettingsId).speed, 2);
+                Mathf.Pow(m_projectileSpeed, 2);
             float b = 2f * Vector3.Dot(target.velocity, toTarget);
             float c = Vector3.Dot(toTarget, toTarget);
 

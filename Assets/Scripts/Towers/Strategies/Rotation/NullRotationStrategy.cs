@@ -10,7 +10,7 @@ namespace Tower
             Transform verticalRotatingTowerPart = null
             )
         {
-            // реализация, как и сам поворот, отсутствует
+            // implementation, like rotation, is empty
         }
     }
 }

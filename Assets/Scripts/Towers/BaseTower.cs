@@ -1,48 +1,68 @@
 ﻿using System.Collections;
-using Enemy;
 using UnityEngine;
+using Enemy;
+using Tools;
 
 namespace Tower
 {
-	public abstract class BaseTower : MonoBehaviour
+	public class BaseTower : MonoBehaviour
 	{
-		[Tooltip("Выбор пресета из GameConfig")]
-		[SerializeField] protected int m_towerSettingsId = 0;
-		[Tooltip("Выбор пресета из GameConfig")]
-		[SerializeField] protected int m_projectileSettingsId = 0;
-		[Tooltip("Точка спавна снаряда")]
-		[SerializeField] protected Transform m_shootStartPoint;
-		[SerializeField] protected Transform m_horizontalRotatingTowerPart;
-		[SerializeField] protected Transform m_verticalRotatingTowerPart;
-		[Tooltip("Макс разница углов башни и напрвляющей к цели (в долях)")]
-		[SerializeField] protected float m_maxCannonAngleDifferenceForShooting = 0.1f;
-		protected SimpleEnemy m_currentTarget;
-		protected Vector3 m_predictedPosition;
-		protected Vector3 m_shootDirection;
-		protected float m_lastShootTime = -1f;
-
-		private Coroutine m_targetSearchCoroutine;
 		private const float TargetSearchInterval = 0.1f;
+		[Tooltip("Point for projectile spawn")]
+		[SerializeField] private Transform m_shootStartPoint;
+		[SerializeField] private Transform m_horizontalRotatingTowerPart;
+		[SerializeField] private Transform m_verticalRotatingTowerPart;
+		private SimpleEnemy m_currentTarget;
+		private Vector3 m_predictedPosition;
+		private Vector3 m_shootDirection;
+		private float m_lastShootTime = -1f;
+		private TowerData m_settings;
+		private Coroutine m_targetSearchCoroutine;
 
-		protected ITargetFindingStrategy m_targetFindingStrategy;
-		protected IAimingStrategy m_aimingStrategy;
-		protected IRotationStrategy m_rotationStrategy;
-		protected IShootingConditionStrategy m_shootingConditionStrategy;
-		protected IShootingStrategy m_shootingStrategy;
+		private ITargetFindingStrategy m_targetFindingStrategy;
+		private IAimingStrategy m_aimingStrategy;
+		private IRotationStrategy m_rotationStrategy;
+		private IShootingConditionStrategy m_shootingConditionStrategy;
+		private IShootingStrategy m_shootingStrategy;
 
-		protected abstract void ConfigureStrategies();
 
-		protected virtual void Awake()
+		#region Setting strategies
+		public BaseTower SetTargetFindingStrategy(ITargetFindingStrategy targetFindingStrategy)
 		{
-			ConfigureStrategies();
+			m_targetFindingStrategy = targetFindingStrategy;
+			return this;
 		}
-
-		protected void Start()
+		public BaseTower SetAimingStrategy(IAimingStrategy aimingStrategy)
 		{
+			m_aimingStrategy = aimingStrategy;
+			return this;
+		}
+		public BaseTower SetRotationStrategy(IRotationStrategy rotationStrategy)
+		{
+			m_rotationStrategy = rotationStrategy;
+			return this;
+		}
+		public BaseTower SetShootingConditionStrategy(IShootingConditionStrategy shootingConditionStrategy)
+		{
+			m_shootingConditionStrategy = shootingConditionStrategy;
+			return this;
+		}
+		public BaseTower SetShootingStrategy(IShootingStrategy shootingStrategy)
+		{
+			m_shootingStrategy = shootingStrategy;
+			return this;
+		}
+		#endregion
+
+		public void Initialize(TowerData towerData)
+		{
+			m_settings = towerData;
+			TowerStrategyFactory.Configure(this, towerData);
+
 			m_targetSearchCoroutine = StartCoroutine(TargetSearchRoutine());
 		}
 
-		protected void Update()
+		private void Update()
 		{
 			if (m_currentTarget != null && m_currentTarget.isAlive)
 			{
@@ -53,21 +73,21 @@ namespace Tower
 				if (m_shootingConditionStrategy != null &&
 					m_shootingConditionStrategy.CanShoot(
 						lastShootTime: m_lastShootTime,
-						maxCannonAngleDifference: m_maxCannonAngleDifferenceForShooting,
+						maxCannonAngleDifference: m_settings.maxCannonAngleDifferenceForShooting,
 						shootStartPointPos: m_shootStartPoint.position,
 						predictedPos: m_predictedPosition,
 						horizontalRotatingTowerPart: m_horizontalRotatingTowerPart,
 						verticalRotatingTowerPart: m_verticalRotatingTowerPart
 					))
 				{
-					m_shootingStrategy?.Shoot(m_shootStartPoint, m_shootDirection, m_currentTarget/* , transform.rotation */);
+					m_shootingStrategy?.Shoot(m_shootStartPoint, m_shootDirection, m_currentTarget);
 
 					m_lastShootTime = Time.time;
 				}
 			}
 		}
 
-		protected IEnumerator TargetSearchRoutine()
+		private IEnumerator TargetSearchRoutine()
 		{
 			var coolDown = new WaitForSeconds(TargetSearchInterval);
 			while (true)
@@ -77,20 +97,23 @@ namespace Tower
 			}
 		}
 
-		protected virtual void OnDisable()
+		private void OnDisable()
 		{
-			// Останавливаем корутину при выключении объекта
+			// stop the routine when the object is turned off
 			if (m_targetSearchCoroutine != null)
 			{
 				StopCoroutine(m_targetSearchCoroutine);
 			}
 		}
-		protected void OnDrawGizmosSelected()
+		private void OnDrawGizmosSelected()
 		{
 			Gizmos.color = UnityEngine.Color.green;
 			Gizmos.DrawWireSphere(transform.position, GetRangeToFindEnemy());
 		}
 
-		protected abstract float GetRangeToFindEnemy();
+		private float GetRangeToFindEnemy()
+		{
+			return m_settings?.rangeToFindEnemy ?? 0f;
+		}
 	}
 }

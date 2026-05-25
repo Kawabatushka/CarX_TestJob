@@ -1,5 +1,6 @@
-﻿using Pooling;
-using UnityEngine;
+﻿using UnityEngine;
+using Pooling;
+using Tools;
 
 namespace Enemy
 {
@@ -20,7 +21,7 @@ namespace Enemy
 
 		private void Update()
 		{
-			if (Time.time >= m_lastSpawn + GameConfig.instance.enemySpawnSettings.spawnInterval)
+			if (Time.time >= m_lastSpawn + EnemyConfig.instance.enemySpawnSettings.spawnInterval)
 			{
 				SpawnEnemy();
 				m_lastSpawn = Time.time;
@@ -31,11 +32,11 @@ namespace Enemy
 		{
 			if (m_moveTarget == null)
 			{
-				Debug.LogError("Spawner.SpawnEnemy m_moveTarget is null");
+				Debug.LogError($"{typeof(Spawner)}.SpawnEnemy m_moveTarget is null");
 				return;
 			}
 
-			var newEnemy = PoolManager.instance.Get(GameConfig.instance.enemySpawnSettings.enemyPrefab, false);
+			var newEnemy = PoolManager.instance.Get(EnemyConfig.instance.enemySpawnSettings.enemyType, false);
 			newEnemy.TryGetComponent(out SimpleEnemy enemyComponent);
 			if (enemyComponent != null)
 			{

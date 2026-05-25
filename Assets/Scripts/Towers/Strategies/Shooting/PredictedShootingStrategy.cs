@@ -6,13 +6,13 @@ using Tools;
 
 namespace Tower
 {
-    public class GuidedShootingStrategy : IShootingStrategy
+    public class PredictedShootingStrategy : IShootingStrategy
     {
         private readonly PooledObjectType m_projectilePrefabType;
         private readonly float m_projectileSpeed;
         private readonly int m_projectileDamage;
 
-        public GuidedShootingStrategy(TowerData towerData)
+        public PredictedShootingStrategy(TowerData towerData)
         {
             m_projectilePrefabType = towerData.projectilePrefabType;
             m_projectileSpeed = towerData.projectileSpeed;
@@ -23,26 +23,25 @@ namespace Tower
         {
             if (shootStartPoint == null)
             {
-                Debug.LogError($"{typeof(GuidedShootingStrategy)}.Shoot shootStartPoint = null\n{nameof(GuidedShootingStrategy)}");
+                Debug.LogError($"{typeof(PredictedShootingStrategy)}.Shoot shootStartPoint is null\n{nameof(PredictedShootingStrategy)}");
                 return;
             }
+
+            Quaternion shootRotation = Quaternion.LookRotation(shootDirection);
 
             var projectileGameObject = PoolManager.instance.Get(
                 m_projectilePrefabType,
                 true,
                 shootStartPoint.position,
-                Quaternion.Euler(shootDirection));
+                shootRotation);
 
-            if (projectileGameObject?.GetComponent<GuidedProjectile>() != null && currentTarget != null)
+            if (projectileGameObject?.GetComponent<CannonProjectile>() != null)
             {
-                projectileGameObject.GetComponent<GuidedProjectile>().Launch(
-                    currentTarget.gameObject,
-                    m_projectileSpeed,
-                    m_projectileDamage);
+                projectileGameObject.GetComponent<CannonProjectile>().Launch(m_projectileSpeed, m_projectileDamage);
             }
             else
             {
-                Debug.LogError($"{typeof(GuidedShootingStrategy)}.Shoot cannonProjectile is null\n{nameof(GuidedShootingStrategy)}");
+                Debug.LogError($"{typeof(PredictedShootingStrategy)}.Shoot cannonProjectile is null\n{nameof(PredictedShootingStrategy)}");
             }
         }
     }

@@ -1,14 +1,15 @@
 using UnityEngine;
+using Tools;
 
 namespace Tower
 {
-    public class GuidedTowerShootingConditionStrategy : IShootingConditionStrategy
+    public class OnlyCooldownManagedShootingConditionStrategy : IShootingConditionStrategy
     {
-        private readonly int m_towerSettingsId;
+        private readonly float m_shootInterval;
 
-        public GuidedTowerShootingConditionStrategy(int towerSettingsId)
+        public OnlyCooldownManagedShootingConditionStrategy(TowerData towerData)
         {
-            m_towerSettingsId = towerSettingsId;
+            m_shootInterval = towerData.shootInterval;
         }
 
         public bool CanShoot(
@@ -20,7 +21,7 @@ namespace Tower
             Transform verticalRotatingTowerPart = null
             )
         {
-            return Time.time >= lastShootTime + GameConfig.instance.GetGuidedTowerSettings(m_towerSettingsId).shootInterval;
+            return Time.time >= lastShootTime + m_shootInterval;
         }
     }
 }

@@ -1,14 +1,15 @@
 using UnityEngine;
+using Tools;
 
 namespace Tower
 {
-    public class CannonTowerRotationStrategy : IRotationStrategy
+    public class SmoothRotationStrategy : IRotationStrategy
     {
-        private readonly int m_towerSettingsId;
+        private readonly float m_rotationSpeed;
 
-        public CannonTowerRotationStrategy(int towerSettingsId)
+        public SmoothRotationStrategy(TowerData towerData)
         {
-            m_towerSettingsId = towerSettingsId;
+            m_rotationSpeed = towerData.rotationSpeed;
         }
 
         public void RotateTower(
@@ -39,7 +40,7 @@ namespace Tower
                 horizontalRotatingTowerPart.rotation = Quaternion.RotateTowards(
                     horizontalRotatingTowerPart.rotation,
                     targetHorizontalRotation,
-                    GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId).rotationSpeed * Time.deltaTime
+                    m_rotationSpeed * Time.deltaTime
                 );
             }
             #endregion
@@ -58,7 +59,7 @@ namespace Tower
                 verticalRotatingTowerPart.rotation = Quaternion.RotateTowards(
                     verticalRotatingTowerPart.rotation,
                     targetVerticalRotation,
-                    GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId).rotationSpeed * Time.deltaTime
+                    m_rotationSpeed * Time.deltaTime
                 );
             }
             #endregion

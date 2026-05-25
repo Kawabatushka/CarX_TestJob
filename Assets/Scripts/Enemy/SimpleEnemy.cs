@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using Pooling;
+using Tools;
 
 namespace Enemy
 {
@@ -16,14 +17,14 @@ namespace Enemy
 		private bool m_isAlive = true;
 
 		public Vector3 moveTargetPosition => m_moveTarget != null ? m_moveTarget.position : Vector3.zero;
-		public Vector3 velocity => moveTargetPosition != null ? (moveTargetPosition - transform.position).normalized * GameConfig.instance.enemyData.speed : Vector3.zero;
+		public Vector3 velocity => moveTargetPosition != null ? (moveTargetPosition - transform.position).normalized * EnemyConfig.instance.enemyData.speed : Vector3.zero;
 		public bool hasReachedTarget => Vector3.Distance(transform.position, moveTargetPosition) <= ReachDistance;
 		public bool isAlive => m_isAlive;
 
 		public void OnSpawned()
 		{
 			m_isAlive = true;
-			m_currentHP = GameConfig.instance.enemyData.maxHP;
+			m_currentHP = EnemyConfig.instance.enemyData.maxHP;
 		}
 
 		public void OnDespawned()
@@ -55,7 +56,6 @@ namespace Enemy
 
 		private void Die()
 		{
-			// "ой фу" - Максим
 			m_isAlive = false;
 			m_currentHP = 0;
 			OnDied?.Invoke(this);
@@ -65,7 +65,7 @@ namespace Enemy
 		private void MoveTowardsTarget()
 		{
 			Vector3 direction = (moveTargetPosition - transform.position).normalized;
-			transform.position += direction * (GameConfig.instance.enemyData.speed * Time.deltaTime);
+			transform.position += direction * (EnemyConfig.instance.enemyData.speed * Time.deltaTime);
 		}
 
 		public void SetMoveTarget(Transform target)

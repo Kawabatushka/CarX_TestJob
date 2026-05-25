@@ -10,7 +10,7 @@ namespace Pooling
 
         [SerializeField] private int m_poolsCapacity = 8;
 
-        private readonly Dictionary<GameObject, IObjectPool> m_pools = new();
+        private readonly Dictionary<PooledObjectType, IObjectPool> m_pools = new();
 
         private void Awake()
         {
@@ -22,20 +22,14 @@ namespace Pooling
             instance = this;
         }
 
-        public GameObject Get(GameObject prefab, bool isActiveInstance = true, Vector3 position = default, Quaternion rotation = default)
+        public GameObject Get(PooledObjectType type, bool isActiveInstance = true, Vector3 position = default, Quaternion rotation = default)
         {
-            if (prefab == null)
+            if (!m_pools.TryGetValue(type, out var pool))
             {
-                Debug.LogError("PoolManager.Get prefab is null", this);
-                return null;
-            }
-
-            if (!m_pools.TryGetValue(prefab, out var pool))
-            {
-                var container = new GameObject($"{PoolContainerName}_{prefab.name}");
+                var container = new GameObject($"{PoolContainerName}_{type.ToString()}");
                 container.transform.SetParent(this.transform);
-                pool = new ObjectPool(prefab, container.transform, m_poolsCapacity);
-                m_pools.Add(prefab, pool);
+                pool = new ObjectPool(type, container.transform, m_poolsCapacity);
+                m_pools.Add(type, pool);
             }
 
             var instance = pool.Get(false);
@@ -55,21 +49,17 @@ namespace Pooling
             }
 
             var pooledObject = instance.GetComponent<PooledObject>();
-            if (pooledObject == null || pooledObject.prefabKey == null)
+            if (pooledObject == null)
             {
                 Destroy(instance);
                 return;
             }
 
-            if (!m_pools.TryGetValue(pooledObject.prefabKey, out var pool))
+            if (m_pools.TryGetValue(pooledObject.prefabType, out var pool))
             {
-                var container = new GameObject($"{PoolContainerName}_{pooledObject.prefabKey.name}");
-                container.transform.SetParent(this.transform);
-                pool = new ObjectPool(pooledObject.prefabKey, container.transform, m_poolsCapacity);
-                m_pools.Add(pooledObject.prefabKey, pool);
+                pool.Release(instance);
             }
 
-            pool.Release(instance);
         }
     }
 }

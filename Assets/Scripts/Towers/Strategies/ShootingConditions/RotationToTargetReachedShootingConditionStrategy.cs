@@ -1,14 +1,15 @@
 using UnityEngine;
+using Tools;
 
 namespace Tower
 {
-    public class CannonTowerShootingConditionStrategy : IShootingConditionStrategy
+    public class RotationToTargetReachedShootingConditionStrategy : IShootingConditionStrategy
     {
-        private readonly int m_towerSettingsId;
+        private readonly float m_shootInterval;
 
-        public CannonTowerShootingConditionStrategy(int towerSettingsId)
+        public RotationToTargetReachedShootingConditionStrategy(TowerData towerData)
         {
-            m_towerSettingsId = towerSettingsId;
+            m_shootInterval = towerData.shootInterval;
         }
 
         public bool CanShoot(
@@ -27,7 +28,7 @@ namespace Tower
 
             if (isHorizontalRotReached && isVerticalRotReached)
             {
-                return Time.time >= lastShootTime + GameConfig.instance.GetCannonTowerSettings(m_towerSettingsId).shootInterval;
+                return Time.time >= lastShootTime + m_shootInterval;
             }
             else
             {

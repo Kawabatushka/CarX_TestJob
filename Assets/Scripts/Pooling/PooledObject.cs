@@ -2,18 +2,16 @@ using UnityEngine;
 
 namespace Pooling
 {
-	// Класс будет использоваться, как компонент для спавна и возврата объетов в пул
-	// Мб если объект не содержит компонент PooledObject, то его просто удалять при достижении цели
-	// TO-DO-R: надо еще возвращать объекты пула спустя время, если они не достигли цели
+	// Класс будет использоваться, как компонент-флаг для спавна и возврата объетов в пул
 	public sealed class PooledObject : MonoBehaviour
 	{
-		[SerializeField] private GameObject m_prefabKey;
+		[SerializeField] private PooledObjectType m_prefabType;
 
-		public GameObject prefabKey => m_prefabKey;
+		public PooledObjectType prefabType => m_prefabType;
 
-		public void Initialize(GameObject prefabKey)
+		public void Initialize(PooledObjectType prefabType)
 		{
-			m_prefabKey = prefabKey;
+			m_prefabType = prefabType;
 		}
 	}
 }
