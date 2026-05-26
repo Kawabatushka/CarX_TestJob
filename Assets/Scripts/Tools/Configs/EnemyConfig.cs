@@ -4,7 +4,8 @@ using UnityEngine;
 namespace Tools
 {
 	[CreateAssetMenu(fileName = "EnemyConfig", menuName = "Configs/EnemyConfig")]
-	public class EnemyConfig : ScriptableSingleton<EnemyConfig>
+	//public class EnemyConfig : ScriptableSingleton<EnemyConfig>
+	public class EnemyConfig : ScriptableObject
 	{
 		[Space(10)]
 		[SerializeField] private EnemyData m_enemySettings;
@@ -13,6 +14,23 @@ namespace Tools
 
 		public EnemyData enemyData => m_enemySettings;
 		public SpawnerData enemySpawnSettings => m_enemySpawnSettings;
+
+		private static EnemyConfig m_instance;
+		public static EnemyConfig instance
+		{
+			get
+			{
+				if (m_instance == null)
+				{
+					m_instance = Resources.Load<EnemyConfig>("EnemyConfig");
+					if (m_instance == null)
+					{
+						Debug.LogError($"{nameof(EnemyConfig)}.asset не найден в папке Resources");
+					}
+				}
+				return m_instance;
+			}
+		}
 	}
 
 	[System.Serializable]

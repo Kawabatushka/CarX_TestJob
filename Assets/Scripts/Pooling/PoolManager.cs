@@ -33,11 +33,14 @@ namespace Pooling
             }
 
             var instance = pool.Get(false);
-            if (position != default && rotation != default)
+            if (instance != null)
             {
-                instance.transform.SetPositionAndRotation(position, rotation);
+                if (position != default && rotation != default)
+                {
+                    instance.transform.SetPositionAndRotation(position, rotation);
+                }
+                instance.SetActive(isActiveInstance);
             }
-            instance.SetActive(isActiveInstance);
             return instance;
         }
 

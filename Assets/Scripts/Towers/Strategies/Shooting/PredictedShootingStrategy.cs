@@ -23,7 +23,7 @@ namespace Tower
         {
             if (shootStartPoint == null)
             {
-                Debug.LogError($"{typeof(PredictedShootingStrategy)}.Shoot shootStartPoint is null\n{nameof(PredictedShootingStrategy)}");
+                Debug.LogError($"{nameof(PredictedShootingStrategy)}.{nameof(Shoot)} shootStartPoint is null\n{nameof(PredictedShootingStrategy)}");
                 return;
             }
 
@@ -41,7 +41,7 @@ namespace Tower
             }
             else
             {
-                Debug.LogError($"{typeof(PredictedShootingStrategy)}.Shoot cannonProjectile is null\n{nameof(PredictedShootingStrategy)}");
+                Debug.LogError($"{nameof(PredictedShootingStrategy)}.{nameof(Shoot)} cannonProjectile is null\n{nameof(PredictedShootingStrategy)}");
             }
         }
     }

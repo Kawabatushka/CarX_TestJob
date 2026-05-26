@@ -15,19 +15,26 @@ namespace Pooling
 
         public ObjectPool(PooledObjectType prefabType, Transform parentObj = null, int capacity = DefaultCapacity)
         {
-            m_prefab = PooledObjectTypeConfig.instance.GetPrefab(prefabType);
+            var config = PooledObjectTypeConfig.instance;
+            if (config == null)
+            {
+                Debug.LogError($"{nameof(ObjectPool)}: {nameof(PooledObjectTypeConfig)} is not loaded.");
+                return;
+            }
+
+            m_prefab = config.GetPrefab(prefabType);
             m_prefabType = prefabType;
             m_elementCount = capacity;
             m_parentObject = parentObj;
             if (m_prefab == null)
             {
-                Debug.LogError($"{typeof(ObjectPool)} prefab is null");
+                Debug.LogError($"{nameof(ObjectPool)} prefab is null");
                 return;
             }
             if (m_elementCount < 0)
             {
                 m_elementCount = DefaultCapacity;
-                Debug.LogError($"{typeof(ObjectPool)} capacity is less than 0. Capacity value set 16 as default.");
+                Debug.LogError($"{nameof(ObjectPool)} capacity is less than 0. Capacity value set 16 as default.");
             }
 
             for (int i = 0; i < m_elementCount; i++)
@@ -54,9 +61,9 @@ namespace Pooling
         {
             if (m_pool.Count == 0)
             {
-                if(m_prefab==null)
+                if (m_prefab == null)
                 {
-                    Debug.LogError($"{typeof(ObjectPool)}.Get prefab is null");
+                    Debug.LogError($"{nameof(ObjectPool)}.{nameof(Get)} prefab is null");
                     return null;
                 }
                 CreateElement();

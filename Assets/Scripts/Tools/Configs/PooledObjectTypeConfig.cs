@@ -6,7 +6,8 @@ using UnityEngine;
 namespace Tools
 {
     [CreateAssetMenu(fileName = "PooledObjectTypeConfig", menuName = "Configs/PooledObjectTypeConfig")]
-    public class PooledObjectTypeConfig : ScriptableSingleton<PooledObjectTypeConfig>
+    //public class PooledObjectTypeConfig : ScriptableSingleton<PooledObjectTypeConfig>
+    public class PooledObjectTypeConfig : ScriptableObject
     {
         [SerializeField] private List<PooledObjectMapElement> m_prefabMap;
 
@@ -21,6 +22,23 @@ namespace Tools
             }
             return null;
         }
+
+		private static PooledObjectTypeConfig m_instance;
+		public static PooledObjectTypeConfig instance
+		{
+			get
+			{
+				if (m_instance == null)
+				{
+					m_instance = Resources.Load<PooledObjectTypeConfig>("PooledObjectTypeConfig");
+					if (m_instance == null)
+					{
+						Debug.LogError($"{nameof(PooledObjectTypeConfig)}.asset не найден в папке Resources");
+					}
+				}
+				return m_instance;
+			}
+		}
     }
 
     [Serializable]

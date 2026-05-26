@@ -32,16 +32,25 @@ namespace Enemy
 		{
 			if (m_moveTarget == null)
 			{
-				Debug.LogError($"{typeof(Spawner)}.SpawnEnemy m_moveTarget is null");
+				Debug.LogError($"{nameof(Spawner)}.{nameof(SpawnEnemy)} m_moveTarget is null");
 				return;
 			}
 
-			var newEnemy = PoolManager.instance.Get(EnemyConfig.instance.enemySpawnSettings.enemyType, false);
+			if (PoolManager.instance == null)
+			{
+				Debug.LogError($"{nameof(Spawner)}.{nameof(SpawnEnemy)} {nameof(PoolManager)} is missing on the scene");
+				return;
+			}
+
+			var newEnemy = PoolManager.instance.Get(EnemyConfig.instance.enemySpawnSettings.enemyType, true, transform.position);
+			if (newEnemy == null)
+			{
+				return;
+			}
+
 			newEnemy.TryGetComponent(out SimpleEnemy enemyComponent);
 			if (enemyComponent != null)
 			{
-				newEnemy.transform.position = this.transform.position;
-				newEnemy.SetActive(true);
 				enemyComponent.SetMoveTarget(m_moveTarget);
 				EnemyManager.instance.RegisterEnemy(enemyComponent);
 			}

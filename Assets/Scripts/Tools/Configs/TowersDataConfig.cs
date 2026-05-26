@@ -5,10 +5,28 @@ using System.Collections.Generic;
 namespace Tools
 {
     [CreateAssetMenu(fileName = "TowersConfiguratorConfig", menuName = "Configs/TowersConfiguratorConfig")]
-    public class TowersDataConfig : ScriptableSingleton<TowersDataConfig>
+    //public class TowersDataConfig : ScriptableSingleton<TowersDataConfig>
+    public class TowersDataConfig : ScriptableObject
     {
         [SerializeField] private List<TowerData> m_towerPresets = new List<TowerData>();
         public List<TowerData> towerPresets => m_towerPresets;
+
+		private static TowersDataConfig m_instance;
+		public static TowersDataConfig instance
+		{
+			get
+			{
+				if (m_instance == null)
+				{
+					m_instance = Resources.Load<TowersDataConfig>("TowersDataConfig");
+					if (m_instance == null)
+					{
+						Debug.LogError($"{nameof(TowersDataConfig)}.asset не найден в папке Resources");
+					}
+				}
+				return m_instance;
+			}
+		}
     }
 
     [System.Serializable]

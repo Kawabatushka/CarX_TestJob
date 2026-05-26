@@ -7,6 +7,7 @@ namespace Tower
 {
 	public class BaseTower : MonoBehaviour
 	{
+		#region  Fields
 		private const float TargetSearchInterval = 0.1f;
 		[Tooltip("Point for projectile spawn")]
 		[SerializeField] private Transform m_shootStartPoint;
@@ -24,7 +25,7 @@ namespace Tower
 		private IRotationStrategy m_rotationStrategy;
 		private IShootingConditionStrategy m_shootingConditionStrategy;
 		private IShootingStrategy m_shootingStrategy;
-
+		#endregion
 
 		#region Setting strategies
 		public BaseTower SetTargetFindingStrategy(ITargetFindingStrategy targetFindingStrategy)
