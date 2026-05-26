@@ -8,12 +8,10 @@ namespace Tools
 	{
 		[Space(10)]
 		[SerializeField] private EnemyData m_enemySettings;
-
 		[Space(10)]
 		[SerializeField] private SpawnerData m_enemySpawnSettings;
 
 		public EnemyData enemyData => m_enemySettings;
-
 		public SpawnerData enemySpawnSettings => m_enemySpawnSettings;
 	}
 

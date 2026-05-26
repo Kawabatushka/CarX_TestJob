@@ -54,6 +54,11 @@ namespace Pooling
         {
             if (m_pool.Count == 0)
             {
+                if(m_prefab==null)
+                {
+                    Debug.LogError($"{typeof(ObjectPool)}.Get prefab is null");
+                    return null;
+                }
                 CreateElement();
             }
             var newElement = m_pool.Dequeue();
