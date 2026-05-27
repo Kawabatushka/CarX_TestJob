@@ -1,3 +1,10 @@
+Инструкция, как запустить проект:
+1. установить Unity 2022.3.19f1 (https://unity.com/releases/editor/whats-new/2022.3.19f1)
+2. загрузить сцену Start
+3. настройка башен: на сцене найти LevelBuider, в нем настроить позицию, поворот башен и id их пресетов (пресеты см. в Resources\TowersDataConfig.asset)
+4. настройка врагов: настраиваются в Resources\EnemyConfig.asset
+
+
 Сделано:
 - рефакторинг архитектуры сцены и префабов
 - исключил тяжелые циклы с методов FindObjectsOfType из Update'ов

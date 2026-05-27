@@ -2,10 +2,11 @@
 using UnityEngine;
 using Enemy;
 using Tools;
+using Pooling;
 
 namespace Tower
 {
-	public class BaseTower : MonoBehaviour
+	public class BaseTower : MonoBehaviour, IPoolable
 	{
 		#region  Fields
 		private const float TargetSearchInterval = 0.1f;
@@ -59,7 +60,6 @@ namespace Tower
 		{
 			m_settings = towerData;
 			TowerStrategyFactory.Configure(this, towerData);
-
 			m_targetSearchCoroutine = StartCoroutine(TargetSearchRoutine());
 		}
 
@@ -88,6 +88,23 @@ namespace Tower
 			}
 		}
 
+		public void OnSpawned()
+		{
+			if (m_settings == null)
+			{
+				return;
+			}
+			m_lastShootTime = -1f;
+			m_currentTarget = null;
+			m_targetSearchCoroutine = StartCoroutine(TargetSearchRoutine());
+		}
+		public void OnDespawned()
+		{
+			StopTargetSearch();
+			m_lastShootTime = -1f;
+			m_currentTarget = null;
+		}
+
 		private IEnumerator TargetSearchRoutine()
 		{
 			var coolDown = new WaitForSeconds(TargetSearchInterval);
@@ -101,11 +118,18 @@ namespace Tower
 		private void OnDisable()
 		{
 			// stop the routine when the object is turned off
-			if (m_targetSearchCoroutine != null)
-			{
-				StopCoroutine(m_targetSearchCoroutine);
-			}
+			StopTargetSearch();
 		}
+
+		private void StopTargetSearch()
+		{
+			if (m_targetSearchCoroutine == null)
+				return;
+
+			StopCoroutine(m_targetSearchCoroutine);
+			m_targetSearchCoroutine = null;
+		}
+
 		private void OnDrawGizmosSelected()
 		{
 			Gizmos.color = UnityEngine.Color.green;
