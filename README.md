@@ -20,5 +20,4 @@
 - добавил конфиг TowersDataConfig (и CustomEditor для него) для настройки разных пресетов башен
 - добавил фабрику TowerStrategyFactory для создания башен и класс LevelBuilder для создания башен на сцене
 
-
-<img width="1847" height="963" alt="image" src="https://github.com/user-attachments/assets/bfbecb05-92c1-43cf-8f11-e40bf3fb29ac" />
+<img width="1338" height="751" alt="image" src="https://github.com/user-attachments/assets/24801b97-36fb-4740-a566-db8be58d1658" />
